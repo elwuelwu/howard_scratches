@@ -5,3 +5,5 @@
 !.gitignore
 !*.tex
 !*.yml
+!*.md
+!*.yml
