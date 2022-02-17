@@ -10,47 +10,65 @@
 
 \setlength{\parindent}{0em}
 \begin{document}
-	First of all. Let's recall that Walsh-Hadamard matrix can be written in a form (where this product form is proved?)
+	Define $2 \times 2$ Pauli matrices: $\mathbf{I}_2, \mathbf{X} = \begin{pmatrix} 0 && 1 \\ 1 && 0 \end{pmatrix}, \mathbf{Z} = \begin{pmatrix} 1 && 0 \\ 0 && -1 \end{pmatrix}, \mathbf{Y} = i\mathbf{X}\mathbf{Z} = \begin{pmatrix} 0 && -i \\ i && 0 \end{pmatrix}$. We need the coefficient $i$ in front of $\mathbf{XZ}$ to make the matrix Hermitian.
+	Let $m \in \mathbb{N}$ and $N = 2^m$. Define a $N \times N$ Pauli matrix with binary vectors $\mathbf{a} = (a_1, ..., a_m), \mathbf{b} = (b_1,..., b_m) \in \mathbb{F}_2^m$ as follows:
+	\begin{align*}
+		\mathbf{E}(\mathbf{a}, \mathbf{b}) = i^{\mathbf{a}\mathbf{b}^T} \mathbf{X}^{a_1}\mathbf{Z}^{b_1} \otimes \cdots \otimes \mathbf{X}^{a_m}\mathbf{Z}^{b_m}
+	\end{align*}
+	$\mathbf{E}(\mathbf{a}, \mathbf{b})$ is clearly Hermitian as a Kronecker product of Hermitian matrices.
+	Let's recall that Walsh-Hadamard matrix can be written in a form (where this product form is proved?)
+	% TODO find out a reference for the product form
 	\begin{align*}
 		\mathbf{H} = \prod_{j=1}^m \frac{1}{\sqrt{2}} (\mathbf{I} + i\mathbf{E}(\mathbf{e}_j, \mathbf{e}_j))
 	\end{align*}
 	
 	Now by simply opening the product, we get
 	\begin{align*}
-		\prod_{j=1}^m \frac{1}{\sqrt{2}} (\mathbf{I} + i\mathbf{E}(\mathbf{e}_j, \mathbf{e}_j)) = \frac{1}{\sqrt{N}} \sum_{a \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a}).
+		\prod_{j=1}^m \frac{1}{\sqrt{2}} (\mathbf{I} + i\mathbf{E}(\mathbf{e}_j, \mathbf{e}_j)) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a}).
 	\end{align*}
 	
 	Walsh-Hadamard matrix belongs to the Clifford group as it permutes the Pauli group. Walsh-Hadamard matrix corresponds to the symplectic matrix $\mathbf{F} = \begin{bmatrix}
 		\mathbf{0} & \mathbf{I} \\
 		\mathbf{I} & \mathbf{0}
 	\end{bmatrix}$
-	so this means that if we conjugate $\mathbf{E}(\mathbf{a},\mathbf{b})$ with the Walsh-Hadamard matrix $\mathbf{H}$, we will swap the places of $\mathbf{a}$ and $\mathbf{b}$: $\mathbf{H}^H\mathbf{E}(\mathbf{a},\mathbf{b})\mathbf{H} = \pm \mathbf{E}(\left[\mathbf{a},\mathbf{b}\right]\mathbf{F}) = \pm \mathbf{E}(\mathbf{b},\mathbf{a})$. Now it is clear that Walsh-Hadamard matrix gives an isomorphism between the $\mathcal{X}$-group: $X = \{E(a,0) \mid a \in \mathbb{F}^m_2 \}$ and $Z$-group: $Z = \{E(0,b) \mid b \in \mathbb{F}^m_2 \}$ since $H^HXH = Z$.
+	so this means that if we conjugate $\mathbf{E}(\mathbf{a},\mathbf{b})$ with the Walsh-Hadamard matrix $\mathbf{H}$, we will swap the places of $\mathbf{a}$ and $\mathbf{b}$: $\mathbf{H}^H\mathbf{E}(\mathbf{a},\mathbf{b})\mathbf{H} = \pm \mathbf{E}(\left[\mathbf{a},\mathbf{b}\right]\mathbf{F}) = \pm \mathbf{E}(\mathbf{b},\mathbf{a})$. Now it is clear that Walsh-Hadamard matrix gives an isomorphism between the $\mathcal{X}$-group: $\mathcal{X} = \{\mathbf{E}(\mathbf{a},\mathbf{0}) \mid \mathbf{a} \in \mathbb{F}^m_2 \}$ and $\mathcal{Z}$-group: $\mathcal{Z} = \{\mathbf{E}(\mathbf{0},\mathbf{b}) \mid \mathbf{b} \in \mathbb{F}^m_2 \}$ since $\mathbf{H}^H\mathcal{X}\mathbf{H} = \mathcal{Z}$. The $\mathcal{X}$-group is a maximal commuting subgroup of the Pauli group.
 	
-	Now the symplectic matrix $T_S = \begin{bmatrix} I & S \\ 0 & I \end{bmatrix}$, where $S$ is a binary symmetric matrix, corresponds to the Clifford operator $g = \text{diag}(i^{vSv^T})$. (This is where the generalization happens when we consider arbitrary binary matrices or matrices with half-elements in the generalized setting).
+	Now the symplectic matrix $\mathbf{T}_\mathbf{S} = \begin{bmatrix} \mathbf{I} & \mathbf{S} \\ \mathbf{0} & \mathbf{I} \end{bmatrix}$, where $\mathbf{S}$ is a binary symmetric matrix, corresponds to the Clifford operator $\mathbf{g} = \text{diag}(i^{\mathbf{v}\mathbf{S}\mathbf{v}^T})$. (This is where the generalization happens when we consider arbitrary binary matrices or matrices with half-elements in the generalized setting).
 	
-	When we conjugate Walsh-Hadamard matrix with $g$, we get a matrix of codewords determined by $S$, where the codewords are the columns (or rows) of the following matrix:
+	%The columns of the Walsh-Hadamard matrix are common eigenvectors (with eigenvalue $\pm 1$) of the $\mathcal{X}$-group. First notice that the columns of Walsh-Hadamard matrix can be written as Kronecker products of vectors $\begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and $\begin{pmatrix} 1 \\ -1 \end{pmatrix}$.
+	
+	% TODO proof
+	%(needs proof) e.g. $\begin{pmatrix} 1 \\ 1 \end{pmatrix} \otimes \begin{pmatrix} 1 \\ -1 \end{pmatrix} = \begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix}$. Notice also that  Now $\mathbf{X}\begin{pmatrix} 1 \\ -1 \end{pmatrix} = - \begin{pmatrix} 1 \\ -1 \end{pmatrix}$. Now for example
+	%\begin{align*}
+	%	 \begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix} \mathbf{I} \otimes \mathbf{X} = \begin{pmatrix} 1 \\ 1 \end{pmatrix} \mathbf{I} \otimes \begin{pmatrix} 1 \\ -1 \end{pmatrix} \mathbf{X} = - \begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix}
+	%\end{align*}
+	
+	When we conjugate Walsh-Hadamard matrix with $\mathbf{g}$, we get a matrix of codewords determined by $\mathbf{S}$, where the codewords are the columns (or rows) of the following matrix:
+	% TODO is here after conjugation with g some sign..?
 	\begin{align*}
-		&W = g^HHg = \frac{1}{\sqrt{N}}g^H\left(\sum_{a \in \mathbb{F}^m_2} i^{w(a)}E(a,a)\right)g = \frac{1}{\sqrt{N}}\sum_{a \in \mathbb{F}^m_2} i^{w(a)}g^HE(a,a)g = \\ &\frac{1}{\sqrt{N}}\sum_{a \in \mathbb{F}^m_2} i^{w(a)}E(\left[a,a\right]T_S) = \frac{1}{\sqrt{N}}\sum_{a \in \mathbb{F}^m_2} i^{w(a)}E(a,aS + a)
+		&\mathbf{W} = \mathbf{g}^H\mathbf{H}\mathbf{g} = \frac{1}{\sqrt{N}}\mathbf{g}^H\left(\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a})\right)\mathbf{g} = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{g}^H\mathbf{E}(\mathbf{a},\mathbf{a})\mathbf{g} = \\ &\frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\left[\mathbf{a},\mathbf{a}\right]\mathbf{T}_\mathbf{S}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a})
 	\end{align*}
 	
 	Now we can also write this in a product form
 	\begin{align*}
-		\frac{1}{\sqrt{N}} \sum_{a \in \mathbb{F}^m_2} i^{w(a)}E(a,aS + a) = \prod_{j = 1}^m\frac{1}{\sqrt{2}}  (-1)^{k_{S, j}}iE(e_j, e_j(S + 1))
+		\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a}) = \prod_{j = 1}^m\frac{1}{\sqrt{2}}(\mathbf{I} + i\mathbf{E}(\mathbf{e}_j, \mathbf{e}_j(\mathbf{S} + \mathbf{I})))
 	\end{align*}
-	where $(-1)^{k_{S, j}}$ is sign determined by $S$ and $j$. This form is not needed for now, but might be handy sometimes. One would have to still find out the sign which is due to the fact that we might need to swap the orders of the $X$ and $Z$ matrices in the tensor product in order to get into the definition of $E(a, aS + a)$.
-	
+	%TODO IS HERE SOME SIGN IN THE PRODUCT FORM??
 	Now calculate a "shift" of the codeword matrix:
 	\begin{align*}
-		E(e_j, 0)W = \frac{1}{\sqrt{N}} \sum_{a \in \mathbb{F}^m_2} i^{w(a)}E(e_j,0)E(a,aS + a) = \frac{1}{\sqrt{N}} \sum_{a \in \mathbb{F}^m_2} i^{w(a)}i^{-e_j(aS + a)}E(a + e_j,aS + a)  = \\ \frac{1}{\sqrt{N}} \sum_{a \in \mathbb{F}^m_2} i^{w(a)-a(S + I)e_j^T}E(a + e_j,aS + a)
+		\mathbf{E}(\mathbf{e}_j, \mathbf{0})\mathbf{W} = &\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{E}(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a}) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}i^{-\mathbf{e}_j(\mathbf{a}\mathbf{S} + \mathbf{a})}\mathbf{E}(\mathbf{a} + \mathbf{e}_j,\mathbf{a}\mathbf{S} + \mathbf{a})  = \\ = &\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})-\mathbf{a}(\mathbf{S} + \mathbf{I})\mathbf{e}_j^T}\mathbf{E}(\mathbf{a} + \mathbf{e}_j,\mathbf{a}\mathbf{S} + \mathbf{a})
 	\end{align*}
 	
 	\vspace{10mm}
 	
-	Consider the pointwise product
+	Denote by $\overline{\mathbf{W}}$ the elementwise complex conjugate of the matrix $\mathbf{W}$. Consider the pointwise product
+	% TODO find out what the pointwise product is
 	\begin{align*}
-		W^H \odot E(e_n, 0)W = \frac{1}{N} \sum_a i^{-w(a)} E(a, a(S + I)) \sum_b i^{w(b) - b(S + I)e_n^T} E(b + e_n, b(S + I))
+		\overline{\mathbf{W}} \odot \mathbf{E}(\mathbf{e}_n, 0)\mathbf{W} = \frac{1}{N} \sum_a i^{-w(a)}(-1)^{a(aS + a)^T} E(a, a(S + I)) \sum_b i^{w(b) - b(S + I)e_n^T} E(b + e_n, b(S + I))
 	\end{align*}
 	If $a \neq b \implies E(a, c) \odot E(b, d) = 0$ so this means that
+	
+	CORRECT THE SIGNS BELOW!!!
 	
 	\begin{align*}
 		&\frac{1}{N} \sum_a i^{-w(a)} E(a, a(S + I)) \sum_b i^{w(b) - b(S + I)e_n^T} E(b + e_n, b(S + I)) =\\ &\frac{1}{N}\sum_{a,b} \delta_{a, b + e_n} i^{-w(a)} i^{w(b)-b(S+I)e_n^T} E(a, a(S+I)) \odot E(b + e_n, b(S+I)) =\\
