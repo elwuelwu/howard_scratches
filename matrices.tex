@@ -26,7 +26,7 @@
 	\begin{align*}
 		\prod_{j=1}^m \frac{1}{\sqrt{2}} (\mathbf{I} + i\mathbf{E}(\mathbf{e}_j, \mathbf{e}_j)) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a}).
 	\end{align*}
-	
+	% TODO give a tensor product form for the Hadamard matrix
 	Walsh-Hadamard matrix belongs to the Clifford group as it permutes the Pauli group. Walsh-Hadamard matrix corresponds to the symplectic matrix $\mathbf{F} = \begin{bmatrix}
 		\mathbf{0} & \mathbf{I} \\
 		\mathbf{I} & \mathbf{0}
@@ -62,13 +62,15 @@
 	\vspace{10mm}
 	
 	Denote by $\overline{\mathbf{W}}$ the elementwise complex conjugate of the matrix $\mathbf{W}$. Consider the pointwise product
-	% TODO find out what the pointwise product is
+	
 	\begin{align*}
 		\overline{\mathbf{W}} \odot \mathbf{E}(\mathbf{e}_n, 0)\mathbf{W} = \frac{1}{N} \sum_a i^{-w(a)}(-1)^{a(aS + a)^T} E(a, a(S + I)) \sum_b i^{w(b) - b(S + I)e_n^T} E(b + e_n, b(S + I))
 	\end{align*}
 	If $a \neq b \implies E(a, c) \odot E(b, d) = 0$ so this means that
 	
 	CORRECT THE SIGNS BELOW!!!
+	% TODO the sign (-1)^{a(aS + a)^T} has been added 
+	% TODO correct the notations, use bold for matrices and vectors as above
 	
 	\begin{align*}
 		&\frac{1}{N} \sum_a i^{-w(a)} E(a, a(S + I)) \sum_b i^{w(b) - b(S + I)e_n^T} E(b + e_n, b(S + I)) =\\ &\frac{1}{N}\sum_{a,b} \delta_{a, b + e_n} i^{-w(a)} i^{w(b)-b(S+I)e_n^T} E(a, a(S+I)) \odot E(b + e_n, b(S+I)) =\\
