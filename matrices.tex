@@ -10,23 +10,26 @@
 
 \setlength{\parindent}{0em}
 \begin{document}
-	Define $2 \times 2$ Pauli matrices: $\mathbf{I}_2, \mathbf{X} = \begin{pmatrix} 0 && 1 \\ 1 && 0 \end{pmatrix}, \mathbf{Z} = \begin{pmatrix} 1 && 0 \\ 0 && -1 \end{pmatrix}, \mathbf{Y} = i\mathbf{X}\mathbf{Z} = \begin{pmatrix} 0 && -i \\ i && 0 \end{pmatrix}$. We need the coefficient $i$ in front of $\mathbf{XZ}$ to make the matrix Hermitian.
-	Let $m \in \mathbb{N}$ and $N = 2^m$. Define a $N \times N$ Pauli matrix with binary vectors $\mathbf{a} = (a_1, ..., a_m), \mathbf{b} = (b_1,..., b_m) \in \mathbb{F}_2^m$ as follows:
+	Define $2 \times 2$ Pauli matrices: $\mathbf{I}_2, \mathbf{X} = \begin{bmatrix} 0 && 1 \\ 1 && 0 \end{bmatrix}, \mathbf{Z} = \begin{bmatrix} 1 && 0 \\ 0 && -1 \end{bmatrix}, \mathbf{Y} = i\mathbf{X}\mathbf{Z} = \begin{bmatrix} 0 && -i \\ i && 0 \end{bmatrix}$. Pauli matrices are Hermitian.
+	Let $m \in \mathbb{N}$ and $N = 2^m$. Define a $N \times N$ D-matrix with binary vectors $\mathbf{a} = (a_1, ..., a_m), \mathbf{b} = (b_1,..., b_m) \in \mathbb{F}_2^m$ as follows:
 	\begin{align*}
-		\mathbf{E}(\mathbf{a}, \mathbf{b}) = i^{\mathbf{a}\mathbf{b}^T} \mathbf{X}^{a_1}\mathbf{Z}^{b_1} \otimes \cdots \otimes \mathbf{X}^{a_m}\mathbf{Z}^{b_m}
+		\mathbf{D}(\mathbf{a}, \mathbf{b}) = \mathbf{X}^{a_1}\mathbf{Z}^{b_1} \otimes \cdots \otimes \mathbf{X}^{a_m}\mathbf{Z}^{b_m}.
 	\end{align*}
-	$\mathbf{E}(\mathbf{a}, \mathbf{b})$ is clearly Hermitian as a Kronecker product of Hermitian matrices.
-	Let's recall that Walsh-Hadamard matrix can be written in a form (where this product form is proved?)
-	% TODO find out a reference for the product form
-	\begin{align*}
-		\mathbf{H} = \prod_{j=1}^m \frac{1}{\sqrt{2}} (\mathbf{I} + i\mathbf{E}(\mathbf{e}_j, \mathbf{e}_j))
-	\end{align*}
-	
-	Now by simply opening the product, we get
-	\begin{align*}
-		\prod_{j=1}^m \frac{1}{\sqrt{2}} (\mathbf{I} + i\mathbf{E}(\mathbf{e}_j, \mathbf{e}_j)) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a}).
-	\end{align*}
-	% TODO give a tensor product form for the Hadamard matrix
+	Now $N \times N$ Pauli matrix is defined as $\mathbf{E}(\mathbf{a}, \mathbf{b}) = i^{\mathbf{a}\mathbf{b}^T}\mathbf{D}(\mathbf{a}, \mathbf{b})$. It is clearly Hermitian as there are imaginary units for every $\mathbf{XZ}$ term, so they can be replaced by $Y$ matrices. The tensor product is Hermitian as every element in the product is Hermitian.
+	Denote by $\mathbf{H}_2 = \dfrac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix}$ the $2 \times 2$ Walsh-Hadamard matrix. Define $N\times N$ Walsh-Hadamard matrix as a tensor product $\mathbf{H}_N = \mathbf{H}^{\otimes m}_2$. Now we can notice that $\mathbf{H}_2 = \frac{1}{\sqrt{2}}(\mathbf{I} - \mathbf{XZ})$ and by distributivity, the tensor product gets forms
+		\begin{align*}
+			\mathbf{H}_N = \bigotimes_{1=1}^m \mathbf{H}_2 =	\bigotimes_{i = 1}^m \frac{1}{\sqrt{2}} (\mathbf{I} - \mathbf{XZ}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a},\mathbf{a}) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0},\mathbf{a})\mathbf{D}(\mathbf{a},\mathbf{0}).
+		\end{align*}
+We can also continue calculations to give more equivalent forms
+\begin{align*}
+	\frac{1}{\sqrt{N}}	\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a}, \mathbf{a}) = \prod_{i = 1}^m (\mathbf{I} + i\mathbf{E}(\mathbf{e}_i, \mathbf{e}_i)) = \prod_{i = 1}^m (\mathbf{I} - \mathbf{D}(\mathbf{e}_i, \mathbf{e}_i))
+\end{align*}
+This is the version of Hadamard matrix where the diagonal is all ones. We can have the "naturally" ordered Hadamard matrix by considering a product $\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}^{\otimes m}$. As $\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix} \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, we can switch between the different versions by multiplying $\mathbf{H}_N\mathbf{X}^{\otimes m}$ i.e. reversing the order of the columns.
+There is a neat sum form for the naturally ordered Hadamard:
+\begin{align*}
+	\mathbf{H}^{\text{nat}}_N = \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0}, \mathbf{a}) \mathbf{D}(\overline{\mathbf{a}}, \mathbf{0})
+\end{align*}
+where $\overline{\mathbf{a}}$ is a bitwise complement of $\mathbf{a}$. 
 	Walsh-Hadamard matrix belongs to the Clifford group as it permutes the Pauli group. Walsh-Hadamard matrix corresponds to the symplectic matrix $\mathbf{F} = \begin{bmatrix}
 		\mathbf{0} & \mathbf{I} \\
 		\mathbf{I} & \mathbf{0}
