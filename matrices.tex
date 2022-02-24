@@ -22,14 +22,14 @@
 		\end{align*}
 We can also continue calculations to give more equivalent forms
 \begin{align*}
-	\frac{1}{\sqrt{N}}	\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a}, \mathbf{a}) = \prod_{i = 1}^m (\mathbf{I} + i\mathbf{E}(\mathbf{e}_i, \mathbf{e}_i)) = \prod_{i = 1}^m (\mathbf{I} - \mathbf{D}(\mathbf{e}_i, \mathbf{e}_i))
+	\frac{1}{\sqrt{N}}	\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}} \prod_{i = 1}^m (\mathbf{I} + i\mathbf{E}(\mathbf{e}_i, \mathbf{e}_i)) = \frac{1}{\sqrt{N}} \prod_{i = 1}^m (\mathbf{I} - \mathbf{D}(\mathbf{e}_i, \mathbf{e}_i))
 \end{align*}
 This is the version of Hadamard matrix where the diagonal is all ones. We can have the "naturally" ordered Hadamard matrix by considering a product $\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}^{\otimes m}$. As $\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix} \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, we can switch between the different versions by multiplying $\mathbf{H}_N\mathbf{X}^{\otimes m}$ i.e. reversing the order of the columns.
 There is a neat sum form for the naturally ordered Hadamard:
 \begin{align*}
-	\mathbf{H}^{\text{nat}}_N = \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0}, \mathbf{a}) \mathbf{D}(\overline{\mathbf{a}}, \mathbf{0})
+	\mathbf{H}^{\text{nat}}_N = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0}, \mathbf{a}) \mathbf{D}(\overline{\mathbf{a}}, \mathbf{0})
 \end{align*}
-where $\overline{\mathbf{a}}$ is a bitwise complement of $\mathbf{a}$. 
+where $\overline{\mathbf{a}}$ is a bitwise complement of $\mathbf{a}$. We will denote the "all ones diagonal" version of $N \times N$ Walsh-Hadamard matrix simply by $\mathbf{H}$. 
 	Walsh-Hadamard matrix belongs to the Clifford group as it permutes the Pauli group. Walsh-Hadamard matrix corresponds to the symplectic matrix $\mathbf{F} = \begin{bmatrix}
 		\mathbf{0} & \mathbf{I} \\
 		\mathbf{I} & \mathbf{0}
