@@ -4,18 +4,21 @@
 \usepackage{amsfonts}
 \usepackage{mathtools}
 
-\title{Merkintöjä}
-\author{heikkila.elias }
-\date{November 2021}
 
+\title{Mathematical foundations for Howard algorithm}
+\author{Elias Heikkilä, Mahdi Baianifar}
+\date{}
 \setlength{\parindent}{0em}
 \begin{document}
-	Define $2 \times 2$ Pauli matrices: $\mathbf{I}_2, \mathbf{X} = \begin{bmatrix} 0 && 1 \\ 1 && 0 \end{bmatrix}, \mathbf{Z} = \begin{bmatrix} 1 && 0 \\ 0 && -1 \end{bmatrix}, \mathbf{Y} = i\mathbf{X}\mathbf{Z} = \begin{bmatrix} 0 && -i \\ i && 0 \end{bmatrix}$. Pauli matrices are Hermitian.
+\maketitle
+\subsection*{Basic definitions}
+Define $2 \times 2$ Pauli matrices: $\mathbf{I}_2, \mathbf{X} = \begin{bmatrix} 0 && 1 \\ 1 && 0 \end{bmatrix}, \mathbf{Z} = \begin{bmatrix} 1 && 0 \\ 0 && -1 \end{bmatrix}, \mathbf{Y} = i\mathbf{X}\mathbf{Z} = \begin{bmatrix} 0 && -i \\ i && 0 \end{bmatrix}$. Pauli matrices are Hermitian.
 	Let $m \in \mathbb{N}$ and $N = 2^m$. Define a $N \times N$ D-matrix with binary vectors $\mathbf{a} = (a_1, ..., a_m), \mathbf{b} = (b_1,..., b_m) \in \mathbb{F}_2^m$ as follows:
 	\begin{align*}
 		\mathbf{D}(\mathbf{a}, \mathbf{b}) = \mathbf{X}^{a_1}\mathbf{Z}^{b_1} \otimes \cdots \otimes \mathbf{X}^{a_m}\mathbf{Z}^{b_m}.
 	\end{align*}
 	Now $N \times N$ Pauli matrix is defined as $\mathbf{E}(\mathbf{a}, \mathbf{b}) = i^{\mathbf{a}\mathbf{b}^T}\mathbf{D}(\mathbf{a}, \mathbf{b})$. It is clearly Hermitian as there are imaginary units for every $\mathbf{XZ}$ term, so they can be replaced by $Y$ matrices. The tensor product is Hermitian as every element in the product is Hermitian.
+	\subsection*{Hadamard matrices}
 	Denote by $\mathbf{H}_2 = \dfrac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix}$ the $2 \times 2$ Walsh-Hadamard matrix. Define $N\times N$ Walsh-Hadamard matrix as a tensor product $\mathbf{H}_N = \mathbf{H}^{\otimes m}_2$. Now we can notice that $\mathbf{H}_2 = \frac{1}{\sqrt{2}}(\mathbf{I} - \mathbf{XZ})$ and by distributivity, the tensor product gets forms
 		\begin{align*}
 			\mathbf{H}_N = \bigotimes_{1=1}^m \mathbf{H}_2 =	\bigotimes_{i = 1}^m \frac{1}{\sqrt{2}} (\mathbf{I} - \mathbf{XZ}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a},\mathbf{a}) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0},\mathbf{a})\mathbf{D}(\mathbf{a},\mathbf{0}).
@@ -35,7 +38,7 @@ where $\overline{\mathbf{a}}$ is a bitwise complement of $\mathbf{a}$. We will d
 		\mathbf{I} & \mathbf{0}
 	\end{bmatrix}$
 	so this means that if we conjugate $\mathbf{E}(\mathbf{a},\mathbf{b})$ with the Walsh-Hadamard matrix $\mathbf{H}$, we will swap the places of $\mathbf{a}$ and $\mathbf{b}$: $\mathbf{H}^H\mathbf{E}(\mathbf{a},\mathbf{b})\mathbf{H} = \pm \mathbf{E}(\left[\mathbf{a},\mathbf{b}\right]\mathbf{F}) = \pm \mathbf{E}(\mathbf{b},\mathbf{a})$. Now it is clear that Walsh-Hadamard matrix gives an isomorphism between the $\mathcal{X}$-group: $\mathcal{X} = \{\mathbf{E}(\mathbf{a},\mathbf{0}) \mid \mathbf{a} \in \mathbb{F}^m_2 \}$ and $\mathcal{Z}$-group: $\mathcal{Z} = \{\mathbf{E}(\mathbf{0},\mathbf{b}) \mid \mathbf{b} \in \mathbb{F}^m_2 \}$ since $\mathbf{H}^H\mathcal{X}\mathbf{H} = \mathcal{Z}$. The $\mathcal{X}$-group is a maximal commuting subgroup of the Pauli group.
-	
+	\subsection*{Binary chirp codebook}
 	Now the symplectic matrix $\mathbf{T}_\mathbf{S} = \begin{bmatrix} \mathbf{I} & \mathbf{S} \\ \mathbf{0} & \mathbf{I} \end{bmatrix}$, where $\mathbf{S}$ is a binary symmetric matrix, corresponds to the Clifford operator $\mathbf{g} = \text{diag}(i^{\mathbf{v}\mathbf{S}\mathbf{v}^T})$. (This is where the generalization happens when we consider arbitrary binary matrices or matrices with half-elements in the generalized setting).
 	
 	%The columns of the Walsh-Hadamard matrix are common eigenvectors (with eigenvalue $\pm 1$) of the $\mathcal{X}$-group. First notice that the columns of Walsh-Hadamard matrix can be written as Kronecker products of vectors $\begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and $\begin{pmatrix} 1 \\ -1 \end{pmatrix}$.
@@ -57,6 +60,7 @@ where $\overline{\mathbf{a}}$ is a bitwise complement of $\mathbf{a}$. We will d
 		\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a}) = \prod_{j = 1}^m\frac{1}{\sqrt{2}}(\mathbf{I} + i\mathbf{E}(\mathbf{e}_j, \mathbf{e}_j(\mathbf{S} + \mathbf{I})))
 	\end{align*}
 	%TODO IS HERE SOME SIGN IN THE PRODUCT FORM??
+	\subsection*{Howard algorithm}
 	Now calculate a "shift" of the codeword matrix:
 	\begin{align*}
 		\mathbf{E}(\mathbf{e}_j, \mathbf{0})\mathbf{W} = &\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{E}(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a}) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}i^{-\mathbf{e}_j(\mathbf{a}\mathbf{S} + \mathbf{a})}\mathbf{E}(\mathbf{a} + \mathbf{e}_j,\mathbf{a}\mathbf{S} + \mathbf{a})  = \\ = &\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})-\mathbf{a}(\mathbf{S} + \mathbf{I})\mathbf{e}_j^T}\mathbf{E}(\mathbf{a} + \mathbf{e}_j,\mathbf{a}\mathbf{S} + \mathbf{a})
