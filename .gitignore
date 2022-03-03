@@ -1,20 +1,17 @@
 # Ignore everything
 *
 
-# Folders
-!**
-
 # Except these
 !.gitignore
-!*.tex
-!*.yml
-!*.md
-!*.yml
+!**.tex
+!**.yml
+!**.md
+!**.yml
 
 # Mathematica
-!*.nb
-!*.m
+!**.nb
+!**.m
 
 # Julia
-!*.toml
-!*.jl
+!**.toml
+!**.jl
