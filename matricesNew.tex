@@ -1,0 +1,303 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+
+\usepackage{xcolor}
+\usepackage{pifont}
+
+\title{Mathematical foundations for Howard algorithm}
+\author{Elias Heikkilä, Mahdi Baianifar}
+\date{}
+\setlength{\parindent}{0em}
+\begin{document}
+	\maketitle
+	\subsection*{Basic definitions}
+	Define $2 \times 2$ Pauli matrices: $\mathbf{I}_2, \mathbf{X} = \begin{bmatrix} 0 && 1 \\ 1 && 0 \end{bmatrix}, \mathbf{Z} = \begin{bmatrix} 1 && 0 \\ 0 && -1 \end{bmatrix}, \mathbf{Y} = i\mathbf{X}\mathbf{Z} = \begin{bmatrix} 0 && -i \\ i && 0 \end{bmatrix}$. Pauli matrices are Hermitian.
+	Let $m \in \mathbb{N}$ and $N = 2^m$. Define a $N \times N$ D-matrix with binary vectors $\mathbf{a} = (a_1, ..., a_m), \mathbf{b} = (b_1,..., b_m) \in \mathbb{F}_2^m$ as follows:
+	\begin{align*}
+		\mathbf{D}(\mathbf{a}, \mathbf{b}) = \mathbf{X}^{a_1}\mathbf{Z}^{b_1} \otimes \cdots \otimes \mathbf{X}^{a_m}\mathbf{Z}^{b_m}.
+	\end{align*}
+	Now $N \times N$ Pauli matrix is defined as $\mathbf{E}(\mathbf{a}, \mathbf{b}) = i^{\mathbf{a}\mathbf{b}^T}\mathbf{D}(\mathbf{a}, \mathbf{b})$. It is clearly Hermitian as there are imaginary units for every $\mathbf{XZ}$ term, so they can be replaced by $Y$ matrices. The tensor product is Hermitian as every element in the product is Hermitian.
+	\subsection*{Hadamard matrices}
+	Denote by $\mathbf{H}_2 = \dfrac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix}$ the $2 \times 2$ Walsh-Hadamard matrix. Define $N\times N$ Walsh-Hadamard matrix as a tensor product $\mathbf{H}_N = \mathbf{H}^{\otimes m}_2$. Now we can notice that $\mathbf{H}_2 = \frac{1}{\sqrt{2}}(\mathbf{I} - \mathbf{XZ})$ and by distributivity, the tensor product gets forms
+	\begin{align*}
+		\mathbf{H}_N = \bigotimes_{1=1}^m \mathbf{H}_2 =	\bigotimes_{i = 1}^m \frac{1}{\sqrt{2}} (\mathbf{I} - \mathbf{XZ}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a},\mathbf{a}) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0},\mathbf{a})\mathbf{D}(\mathbf{a},\mathbf{0}).
+	\end{align*}
+	We can also continue calculations to give more equivalent forms
+	\begin{align*}
+		\frac{1}{\sqrt{N}}	\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}} \prod_{i = 1}^m (\mathbf{I} + i\mathbf{E}(\mathbf{e}_i, \mathbf{e}_i)) = \frac{1}{\sqrt{N}} \prod_{i = 1}^m (\mathbf{I} - \mathbf{D}(\mathbf{e}_i, \mathbf{e}_i))
+	\end{align*}
+	------------------------------------------------------------------------------------
+	
+	\textcolor{red}{
+		About the second equality how it can be possible?} 
+	\begin{itemize}
+		\item[\ding{45}] I will follow steps like: define $\mathbf{a} = [a_1, a_2, ..., a_m] = a_1\mathbf{e}_1 + a_2\mathbf{e}_2 + ...+a_m\mathbf{e}_m$ where $a_i \in \left\{0, 1 \right\}$ and $\mathbf{e}_i$ is $m \times 1$ vector such that has a 1 at position $i$ and zero at other locations. Then we can write 
+		$\mathbf{a} = a_1 \mathbf{e}_1 + a_2 \mathbf{e}_2 +...+a_m \mathbf{e}_m$, thus, we have
+		\begin{align*}
+			D\left(\mathbf{a}, \mathbf{a}\right)& =  D\left(\sum_{i=1}^{m}{a_i \mathbf{e}_i} , \sum_{i=1}^{m}{a_i \mathbf{e}_i} \right)  \\
+			& \stackrel{(a)}{=} D\left(\sum_{i=1}^{m-1}{a_i \mathbf{e}_i} , \sum_{i=1}^{m-1}{a_i \mathbf{e}_i} \right)D\left(a_m \mathbf{e}_m, a_m \mathbf{e}_m\right) \\
+			&= \prod_{i=1}^{m}D\left(a_i \mathbf{e}_i, a_i \mathbf{e}_i\right)
+		\end{align*}
+		where $(a)$ comes from the fact that $\mathbf{e}_i$ is orthogonal to $\mathbf{e}_j$ for $j=1,2,...,i-1$ and $D(\mathbf{a,b}) D(\mathbf{c,d}) = (-1)^{\mathbf{b}\mathbf{c}^T} D(\mathbf{a+b}, \mathbf{c+d})$. 
+		Hence, we can rewrite as 
+		\begin{equation*}
+			\frac{1}{\sqrt{N}}	\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}}{\sum_{\mathbf{a} \in \mathbb{F}_2^m} \prod_{i=1}^{m} (-1)^{a_i} D\left(a_i \mathbf{e}_i, a_i \mathbf{e}_i\right)}
+		\end{equation*}
+	\end{itemize}
+	------------------------------------------------------------------------------------
+	
+	
+	% TODO get rid of the signs in sum of D matrices and use the Hadamard matrix of the form \sum D(a,a).
+	
+	% TODO Find a reference or write a proof that binary symmetric matrix can be written as a sum of at most m + 1 transvections.
+	% Also it would be great to find explicitly how the CLifford g = diag(i^xSx) is decomposed into transvections.
+	
+	This is the version of Hadamard matrix where the diagonal is all ones. We can have the "naturally" ordered Hadamard matrix by considering a product $\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}^{\otimes m}$. As $\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix} \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, we can switch between the different versions by multiplying $\mathbf{H}_N\mathbf{X}^{\otimes m}$ i.e. reversing the order of the columns.
+	There is a neat sum form for the naturally ordered Hadamard:
+	\begin{align*}
+		\mathbf{H}^{\text{nat}}_N = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0}, \mathbf{a}) \mathbf{D}(\overline{\mathbf{a}}, \mathbf{0})
+	\end{align*}
+	where $\overline{\mathbf{a}}$ is a bitwise complement of $\mathbf{a}$. We will denote the "all ones diagonal" version of $N \times N$ Walsh-Hadamard matrix simply by $\mathbf{H}$. 
+	Walsh-Hadamard matrix belongs to the Clifford group as it permutes the Pauli group. Walsh-Hadamard matrix corresponds to the symplectic matrix $\mathbf{F} = \begin{bmatrix}
+		\mathbf{0} & \mathbf{I} \\
+		\mathbf{I} & \mathbf{0}
+	\end{bmatrix}$
+	so this means that if we conjugate $\mathbf{E}(\mathbf{a},\mathbf{b})$ with the Walsh-Hadamard matrix $\mathbf{H}$, we will swap the places of $\mathbf{a}$ and $\mathbf{b}$: $\mathbf{H}^H\mathbf{E}(\mathbf{a},\mathbf{b})\mathbf{H} = \pm \mathbf{E}(\left[\mathbf{a},\mathbf{b}\right]\mathbf{F}) = \pm \mathbf{E}(\mathbf{b},\mathbf{a})$. Now it is clear that Walsh-Hadamard matrix gives an isomorphism between the $\mathcal{X}$-group: $\mathcal{X} = \{\mathbf{E}(\mathbf{a},\mathbf{0}) \mid \mathbf{a} \in \mathbb{F}^m_2 \}$ and $\mathcal{Z}$-group: $\mathcal{Z} = \{\mathbf{E}(\mathbf{0},\mathbf{b}) \mid \mathbf{b} \in \mathbb{F}^m_2 \}$ since $\mathbf{H}^H\mathcal{X}\mathbf{H} = \mathcal{Z}$. The $\mathcal{X}$-group is a maximal commuting subgroup of the Pauli group.
+	\\
+	
+	\textcolor{red}{Can we say that also $\mathcal{Z}$ is a maximal commuting group too?}
+	
+	
+	\subsection*{Binary chirp codebook}
+	Now the symplectic matrix $\mathbf{T}_\mathbf{S} = \begin{bmatrix} \mathbf{I} & \mathbf{S} \\ \mathbf{0} & \mathbf{I} \end{bmatrix}$, where $\mathbf{S}$ is a binary symmetric matrix, corresponds to the Clifford operator $\mathbf{g} = \text{diag}(i^{\mathbf{v}\mathbf{S}\mathbf{v}^T})$. (This is where the generalization happens when we consider arbitrary binary matrices or matrices with half-elements in the generalized setting). \\
+	
+	\textcolor{blue}{
+		TODO prove that rows (or columns) of Walsh-Hadamard matrix are eigenvectors with eigenvalue $\pm 1$ of the X-group. If you take any Hadamard row, denote it by r, and any X-group element denoted by x, 
+		it should hold that $xr = \pm r$ 
+	}
+	\textcolor{blue}{
+		Here are some scratches for proof, but a more formal proof is needed. It comes from the tensor products somehow...
+	}
+	\textcolor{blue}{	
+		The columns of the Walsh-Hadamard matrix are common eigenvectors (with eigenvalue $\pm 1$) of the $\mathcal{X}$-group. First notice that the columns of Walsh-Hadamard matrix can be written as Kronecker products of vectors $\begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and $\begin{pmatrix} 1 \\ -1 \end{pmatrix}$.
+	}
+	
+	\textcolor{blue}{
+		(needs proof) e.g. $\begin{pmatrix} 1 \\ 1 \end{pmatrix} \otimes \begin{pmatrix} 1 \\ -1 \end{pmatrix} = \begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix}$. Notice also that  Now $\mathbf{X}\begin{pmatrix} 1 \\ -1 \end{pmatrix} = - \begin{pmatrix} 1 \\ -1 \end{pmatrix}$. Now for example
+		\begin{align*}
+			\begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix} \mathbf{I} \otimes \mathbf{X} = \begin{pmatrix} 1 \\ 1 \end{pmatrix} \mathbf{I} \otimes \begin{pmatrix} 1 \\ -1 \end{pmatrix} \mathbf{X} = - \begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix}
+		\end{align*}
+	}
+	\\
+	\textcolor{red}{
+		I tried multiple ways, but first I try to give simple proof that I found in the Globcome paper. First, we notice that 
+		\begin{equation}\label{Xtypes}
+			D\left(\mathbf{a}, \mathbf{0}\right) = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{|\mathbf{v+a}><\mathbf{v}|}
+		\end{equation} 
+		Also, we can rewrite $\mathbf{H}_N^{\text{nat}}$ as follows
+		\begin{equation}\label{Hrefomed}
+			\mathbf{H}_N^{\text{nat}} = \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} \mathbf{v}^T } |\mathbf{u}><\mathbf{v}|}
+		\end{equation}
+		Hence, $i$th column of $\mathbf{H}_N$ can be written as 
+		\begin{equation}\label{ithColHn}
+			\mathbf{H}_N^{\text{nat}} \mathbf{e}_i = \mathbf{H}_N^{\text{nat}} | \mathbf{v}_{\mathbf{e}_i}> = \frac{1}{\sqrt{N}} \sum_{\mathbf{u} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} \mathbf{v}_{\mathbf{e}_i}^T } |\mathbf{u}>}
+		\end{equation}
+		Considering Eq. \eqref{Xtypes} and \eqref{ithColHn}, we have
+		\begin{align*}
+			D\left(\mathbf{a}, \mathbf{0} \right) \mathbf{H}_N^{\text{nat}} | \mathbf{v}_{\mathbf{e}_i} > \: & = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{|\mathbf{v+a}><\mathbf{v}|}  \frac{1}{\sqrt{N}} \sum_{\mathbf{u} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} \mathbf{v}_{\mathbf{e}_i}^T } |\mathbf{u} > } \\
+			& = \frac{1}{\sqrt{N}} \sum_{\mathbf{v} \in \mathbb{F}_2^m}{(-1)^{\mathbf{v}\mathbf{v}_{\mathbf{e}_i}^T } |\mathbf{v+a}>} \\
+			& = \frac{1}{\sqrt{N}} \sum_{\mathbf{v} \in \mathbb{F}_2^m}{(-1)^{\left(\mathbf{v+a}\right)\mathbf{v}_{\mathbf{e}_i}^T } |\mathbf{v}>}\\
+			& = (-1)^{\mathbf{a}\mathbf{v}_{\mathbf{e}_i}^T} \mathbf{H}_N^{\text{nat}} \mathbf{e}_i
+		\end{align*} 
+		However, this proof needs to verify Eq. \eqref{Xtypes} and also Eq. \eqref{Hrefomed}. To do so, first consider Eq. \eqref{Xtypes}, as we know $\mathbf{x} = |0><1| + |1><0|$ and also $\mathbf{I} = |0><0| + |1><1|$, consider the fact that 
+		\begin{equation*}
+			\mathbf{x}^{a_1}  = (1-a_1)\bigg{(}|0><0| + |1><1|\bigg{)}+a_1 \bigg{(} |0><1| + |1><0| \bigg{)}
+		\end{equation*}
+		Then, we have
+		\begin{align*}
+			\mathbf{x}^{a_1} \otimes \mathbf{x}^{a_2} &= (1-a_1)(1-a_2)\bigg{(} |00><00|+|01><01|+|10><10|+|11><11| \bigg{)}\\
+			&+ (1-a_1)a_2\bigg{(} |00><01|+|01><00|+|10><11|+|11><10| \bigg{)} \\
+			&+a_1(1-a_2)\bigg{(} |00><10|+|01><11|+|10><00|+|11><01| \bigg{)} \\
+			&+a_1 a_2 \bigg{(} |00><11|+|01><10|+|10><01|+|11><00| \bigg{)}
+		\end{align*}
+		Hence it can be seen that Eq. \eqref{Xtypes} is correct. However, we need another relation for $D\left(0, \mathbf{a}\right)$. Using similar approach, we can see that 
+		\begin{equation}\label{Ztypes}
+			D\left(\mathbf{0},\mathbf{a}\right) = \sum_{\mathbf{v}\in \mathbb{F}_2^m}{ (-1)^{\mathbf{a} \mathbf{v}^T} |\mathbf{v}><\mathbf{v}|}
+		\end{equation}
+		Then combining Eq. \eqref{Xtypes} and \eqref{Ztypes}, we have 
+		\begin{align}\label{XZtypes}
+			D\left(\mathbf{a}, \mathbf{b}\right) &= D\left(\mathbf{a}, \mathbf{0}\right) D\left(\mathbf{0}, \mathbf{b}\right) = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{|\mathbf{v+a}><\mathbf{v}|}  \sum_{\mathbf{v}'\in \mathbb{F}_2^m}{ (-1)^{\mathbf{v}' \mathbf{b}^T} |\mathbf{v}'><\mathbf{v}'|} \nonumber \\
+			& = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{(-1)^{\mathbf{v} \mathbf{b}^T} |\mathbf{v+a}><\mathbf{v}|}
+		\end{align}
+		Finally considering $\mathbf{H}_N = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})} D\left( \mathbf{a}, \mathbf{a} \right)$ and substituting \eqref{XZtypes}, we get
+		\begin{equation}\label{HnotNat}
+			\mathbf{H}_N = \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} (\mathbf{v+u})^T } |\mathbf{u}><\mathbf{v}|}
+		\end{equation}
+	that differs from	Eq. \eqref{Hrefomed}!! Since \eqref{HnotNat} is related with non-natural Hadamard gate, however, Eq. \eqref{Hrefomed} is used for natural Hadamard gate. Relation between them? We notice that $\mathbf{H}_N^{\text{nat}} = \mathbf{H}\mathbf{X}^{\otimes m}$, using \eqref{HnotNat}, we get
+	\begin{align*}
+		\frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} (\mathbf{v+u})^T } |\mathbf{u}><\mathbf{v}|}\mathbf{D}(\mathbf{1,0}) &= \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} (\mathbf{v+u})^T } |\mathbf{u}><\mathbf{v}|}\sum_{\mathbf{x} \in \mathbf{F}_2^m}{ |\mathbf{x+1}><\mathbf{x}|} \\
+		& =  \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} (\mathbf{v+u+1})^T } |\mathbf{u}><\mathbf{v}|}
+	\end{align*}
+where $\mathbf{u}(\mathbf{v+u+1})^T=\mathbf{u}(\mathbf{v}^T$ since $\mathbf{u}(\mathbf{u+1})^T=0$, and hence, we get the \eqref{Hrefomed}.
+		Also, we can use other approach as follows
+		\begin{align*}
+			D\left(\mathbf{b},\mathbf{0}\right) \mathbf{H}_N |v>& \: = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m}{D\left(\mathbf{b},\mathbf{0}\right) D\left(\mathbf{0},\mathbf{a}\right) D\left(\mathbf{a},\mathbf{0}\right)}|v> = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m}{(-1)^{\mathbf{a}\mathbf{a}^T} D\left(\mathbf{b}+\mathbf{a},\mathbf{a}\right)}|v> \\
+			& = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m}{(-1)^{(\mathbf{a+v})\mathbf{a}^T} | \mathbf{v}+\mathbf{a}+\mathbf{b}>}=\frac{1}{\sqrt{N}}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{(-1)^{(\mathbf{b+x+v})(\mathbf{x+b})^T} | \mathbf{v}+\mathbf{x}>} \\
+			&=\frac{(-1)^{(\mathbf{v+b})
+					\mathbf{b}^T }}{\sqrt{N}}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{(-1)^{(\mathbf{v+x})\mathbf{x}^T} | \mathbf{v}+\mathbf{x}>}=\frac{(-1)^{(\mathbf{v+b})
+					\mathbf{b}^T }}{\sqrt{N}}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{D(\mathbf{0, x}) D(\mathbf{x, 0})}|v>
+		\end{align*}
+		Where the last term is equal to $\mathbf{H}_N | \mathbf{v}>$. We note that multiplying the result with $\mathbf{X}^{\otimes m}$, we get similar result as in \eqref{ithColHn}.
+	}
+	\\
+	
+	When we conjugate Walsh-Hadamard matrix with $\mathbf{g}$, we get a matrix of codewords determined by $\mathbf{S}$, where the codewords are the columns (or rows) of the following matrix:
+	
+	\begin{align*}
+		&\mathbf{W} = \mathbf{g}^H\mathbf{H}\mathbf{g} = \frac{1}{\sqrt{N}}\mathbf{g}^H\left(\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a})\right)\mathbf{g} = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{g}^H\mathbf{E}(\mathbf{a},\mathbf{a})\mathbf{g} = \\ &\frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2}(\pm 1) i^{w(\mathbf{a})}\mathbf{E}(\left[\mathbf{a},\mathbf{a}\right]\mathbf{T}_\mathbf{S}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2}(\pm 1) i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a})
+	\end{align*}
+	
+	
+	\textcolor{blue}{
+		TODO calculate what is the sign $\pm 1$ when we conjugate E(a,a) with g.	
+	}
+	\\
+	
+	\textcolor{red}{
+		I think it is wrong and we must consider $\mathbf{W} = \mathbf{g}\mathbf{H}\mathbf{g}^H$. If we consider the fact that 
+\begin{equation}
+	\mathbf{g} = \sum_{\mathbf{v} \in \mathbb{F}^m_2}{i^{\mathbf{v S v^T}} |\mathbf{v}><\mathbf{v}|}
+\end{equation}
+we can prove that $\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a}) \mathbf{g}^H = +\mathbf{E}(\mathbf{a,a+a S})$ as follows
+\begin{align}
+	\mathbf{g} \mathbf{E}(\mathbf{a,a}) \mathbf{g}^H &=\sum_{\mathbf{v} \in \mathbb{F}^m_2}{i^{\mathbf{v S v^T}} |\mathbf{v}><\mathbf{v}|} i^{\mathbf{a}\mathbf{a}^T}\sum_{\mathbf{u} \in \mathbb{F}^m_2}{(-1)^{\mathbf{a}\mathbf{u}^T} |\mathbf{u+a}><\mathbf{u}|}\sum_{\mathbf{z} \in \mathbb{F}^m_2}{i^{-\mathbf{z S z^T}} |\mathbf{z}><\mathbf{z}|} \nonumber \\
+	&= i^{\mathbf{a}\mathbf{a}^T}\sum_{\mathbf{u} \in \mathbb{F}^m_2}{i^{\mathbf{(u+a)S}(\mathbf{u+a})^T} (-1)^{\mathbf{a}\mathbf{u}^T}i^{-\mathbf{uS}\mathbf{u}^T} |\mathbf{u+a}><\mathbf{u}|} \nonumber \\
+	&= i^{\mathbf{a+aS}\mathbf{a}^T}\sum_{\mathbf{u} \in \mathbb{F}^m_2}{(-1)^{\mathbf{a+aS}\mathbf{u}^T} |\mathbf{u+a}><\mathbf{u}|}= i^{\mathbf{a+aS}\mathbf{a}^T}\mathbf{D}(\mathbf{a, a+aS}) = \mathbf{E}(\mathbf{a, a+aS})
+\end{align}
+}
+	\\
+	
+	Now we can also write this in a product form
+	\begin{align*}
+		\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a}) = \prod_{j = 1}^m\frac{1}{\sqrt{2}}(\mathbf{I} + i\mathbf{E}(\mathbf{e}_j, \mathbf{e}_j(\mathbf{S} + \mathbf{I})))
+	\end{align*}
+	\\
+	
+	\textcolor{blue}{TODO IS HERE SOME SIGN IN THE PRODUCT FORM??}
+	\\
+	
+	\textcolor{red}{It seems that sings are ok here.}
+	
+	\subsection*{Howard algorithm}
+	Now calculate a "shift" of the codeword matrix:
+	\begin{align*}
+		\mathbf{E}(\mathbf{e}_j, \mathbf{0})\mathbf{W} = &\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{E}(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a}) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}i^{-\mathbf{e}_j(\mathbf{a}\mathbf{S} + \mathbf{a})^T}\mathbf{E}(\mathbf{a} + \mathbf{e}_j,\mathbf{a}\mathbf{S} + \mathbf{a})  = \\  &= \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})-\mathbf{a}(\mathbf{S} + \mathbf{I})\mathbf{e}_j^T}\mathbf{E}(\mathbf{a} + \mathbf{e}_j,\mathbf{a}\mathbf{S} + \mathbf{a})
+	\end{align*}
+	
+	
+	Denote by $\overline{\mathbf{W}}$ the elementwise complex conjugate of the matrix $\mathbf{W}$. Consider the pointwise product
+	
+	\begin{align*}
+		\overline{\mathbf{W}} \odot \mathbf{E}(\mathbf{e}_n, 0)\mathbf{W} = \frac{1}{N} \sum_a i^{-w(\mathbf{a})}(-1)^{\mathbf{a}(\mathbf{a}\mathbf{S} + \mathbf{a})^T} E(\mathbf{a}, \mathbf{a}(\mathbf{S} + \mathbf{I})) \textcolor{red}{\odot} \sum_b i^{w(\mathbf{b}) - \mathbf{b}(\mathbf{S} + \mathbf{I})\mathbf{e}_n^T} E(\mathbf{b} + \mathbf{e}_n, \mathbf{b}(\mathbf{S} + \mathbf{I}))
+	\end{align*}
+	If $\mathbf{a} \neq \mathbf{b} \implies E(\mathbf{a}, \mathbf{c}) \odot E(\mathbf{b}, \mathbf{d}) = \mathbf{0}$. \\
+%	\textcolor{red}{Above equation is not correct and must be rewritten as follows
+%	\begin{equation*}
+%		\overline{\mathbf{W}} \odot \mathbf{E}(\mathbf{e}_n, 0)\mathbf{W} = \frac{1}{N} \sum_a i^{-w(\mathbf{a})} E(\mathbf{a}, \mathbf{a}(\mathbf{S} + \mathbf{I})) \odot \sum_b i^{w(\mathbf{b}) - \mathbf{b}(\mathbf{S} + \mathbf{I})\mathbf{e}_n^T} E(\mathbf{b} + \mathbf{e}_n, \mathbf{b}(\mathbf{S} + \mathbf{I}))
+%	\end{equation*}
+%}
+	
+	
+	--------------------------------------------------------------------------------------------------------- \\
+	\textcolor{red}{Why this is true? First we notice that 
+		\begin{equation*}
+			\left(\mathbf{A} \otimes \mathbf{B} \right) \odot \left(\mathbf{C} \otimes  \mathbf{D} \right) = \left(\mathbf{A} \odot \mathbf{C} \right) \otimes \left(\mathbf{B} \odot \mathbf{D}\right)
+		\end{equation*}	
+		Then we notice that $\mathbf{x}$ changes position of diagonal to anti-diagonal elements and thus when consider above mentioned point we have $\left(\mathbf{x}^{a_1} \mathbf{z}^{b_1}  \right) \odot \left(\mathbf{x}^{c_1} \mathbf{z}^{d_1}  \right)$ when $a_1 \neq c_1$ result will be $\odot$ of diagonal and anti-diagonal and hence will be a all zero matrix.
+	}
+	
+	---------------------------------------------------------------------------------------------------------
+	
+	
+	so this means that
+	
+	CORRECT THE SIGNS BELOW!!!
+	% TODO the sign (-1)^{a(aS + a)^T} has been added, add it to the calculations below 
+	% TODO correct the notations, use bold for matrices and vectors, similarily as above
+	
+	\begin{align*}
+		&=\frac{1}{N} \sum_{\mathbf{a}\in \mathbb{F}_2^m} (-1)^{\mathbf{a}(\mathbf{a}\mathbf{S} + \mathbf{a})^T} i^{-w(\mathbf{a})} E(\mathbf{a}, \mathbf{a}(\mathbf{S} + \mathbf{I})) \odot \sum_{\mathbf{b}\in \mathbb{F}_2^m} i^{w(\mathbf{b}) - \mathbf{b}(\mathbf{S} + \mathbf{I})\mathbf{e}_n^T} E(\mathbf{b} + \mathbf{e}_n, \mathbf{b}(\mathbf{S} + \mathbf{I})) \\
+		&=\frac{1}{N}\sum_{\mathbf{a},\mathbf{b}\in \mathbb{F}_2^m} \delta_{\mathbf{a}, \mathbf{b} + \mathbf{e}_n} (-1)^{\mathbf{a}(\mathbf{a}\mathbf{S} + \mathbf{a})^T} i^{-w(\mathbf{a})} i^{w(\mathbf{b})-\mathbf{b}(\mathbf{S}+\mathbf{I})\mathbf{e}_n^T} E(\mathbf{a}, \mathbf{a}(\mathbf{S}+\mathbf{I})) \odot E(\mathbf{b} + \mathbf{e}_n, \mathbf{b}(\mathbf{S}+\mathbf{I})) \\
+		&=\frac{1}{N}\sum_{\mathbf{a},\mathbf{b}\in \mathbb{F}_2^m} (-1)^{((\mathbf{b}+\mathbf{e}_n)\mathbf{S} + \mathbf{b}+\mathbf{e}_n)(\mathbf{b}+\mathbf{e}_n)^T} i^{-w(\mathbf{b}+\mathbf{e}_n)} i^{w(\mathbf{b})-\mathbf{b}(\mathbf{S}+\mathbf{I})\mathbf{e}_n^T} \\
+		&E(\mathbf{b}+\mathbf{e}_n, \mathbf{b}(\mathbf{S}+\mathbf{I}) +\mathbf{e}_n (\mathbf{S}+\mathbf{I})) \odot E(\mathbf{b} + \mathbf{e}_n, \mathbf{b}(\mathbf{S}+\mathbf{I})) \\
+		&\stackrel{\textcolor{red}{(a)}}{=}\frac{1}{N}\sum_{\mathbf{b}\in \mathbb{F}_2^m}(-1)^{((\mathbf{b}+\mathbf{e}_n)\mathbf{S}+\mathbf{b}+\mathbf{e}_n)(\mathbf{b}+\mathbf{e}_n)^T} (-1)^{(\mathbf{b+bS})(\mathbf{b}+\mathbf{e}_n)^T} i^{w(\mathbf{b})-w(\mathbf{b}+\mathbf{e}_n)-\mathbf{b}(\mathbf{S}+\mathbf{I})\mathbf{e}_n^T}E(\mathbf{b} + \mathbf{e}_n, \mathbf{e}_n(\mathbf{S}+\mathbf{I}))   \\
+		&=\frac{1}{N} \sum_{ \mathbf{b}\in \mathbb{F}_2^m }(-1)^{(\mathbf{e}_n\mathbf{S}+\mathbf{e}_n)(\mathbf{b}+\mathbf{e}_n)^T} i^{\mathbf{b}\mathbf{b}^T - (\mathbf{b}+\mathbf{e}_n)(\mathbf{b}+\mathbf{e}_n)^T - \mathbf{b}\mathbf{S}_n^T - \mathbf{b}\mathbf{e}_n^T}E(\mathbf{b}+\mathbf{e}_n, \mathbf{S}_n + \mathbf{e}_n)  \\ 
+		&\stackrel{\textcolor{red}{(b)}}{=}\frac{1}{N} \sum_{\mathbf{b}\in \mathbb{F}_2^m}(-1)^{(\mathbf{e}_n\mathbf{S}+\mathbf{e}_n)(\mathbf{b}+\mathbf{e}_n)^T-\mathbf{b}\mathbf{e}_n^T} i^{\mathbf{b(S-I)}\mathbf{e}_n^T - 1}E(\mathbf{b}+\mathbf{e}_n,\mathbf{S}_n+\mathbf{e}_n) \\
+		&=\frac{1}{N} \sum_{\mathbf{b}\in \mathbb{F}_2^m}(-1)^{\mathbf{e}_n\mathbf{S}(\mathbf{b}+\mathbf{e}_n)^T} i^{\mathbf{b(S-I)}\mathbf{e}_n^T + 1}E(\mathbf{b}+\mathbf{e}_n,\mathbf{S}_n+\mathbf{e}_n)\\
+		&=\frac{1}{N} \sum_{\mathbf{b}\in \mathbb{F}_2^m} i^{((2\mathbf{e}_n-\mathbf{b})\mathbf{S}-\mathbf{b})\mathbf{e}_n^T + 1}E(\mathbf{b}+\mathbf{e}_n,\mathbf{S}_n+\mathbf{e}_n) \\
+		&=\frac{i}{N}(-1)^{\mathbf{e}_n\mathbf{S}\mathbf{e}_n^T} \sum_{\mathbf{b}\in \mathbb{F}_2^m} i^{-\mathbf{b}(\mathbf{S}+\mathbf{I})\mathbf{e}_n^T }E(\mathbf{b}+\mathbf{e}_n,\mathbf{S}_n+\mathbf{e}_n)
+	\end{align*}
+	\textcolor{red}{
+		We notice about $(a)$, it comes from the fact that $D(\mathbf{a, b+c}) \odot D(\mathbf{a, b})=D(\mathbf{a, c})$. How we can prove that? Here is some insight. By considering the definition, it is suffice to consider first element for example:
+		\begin{equation*}
+			\mathbf{x}^{a_1}\mathbf{z}^{b_1+c_1} \odot \mathbf{x}^{a_1}\mathbf{z}^{b_1}
+		\end{equation*}
+		we have 8 different cases here, by checking each of them and considering the fact that $\mathbf{x}\mathbf{z}\odot \mathbf{x}\mathbf{z} = \mathbf{x}$ and $\mathbf{x}\odot \mathbf{x}\mathbf{z} = \mathbf{x}\mathbf{z}$, we can conclude the result. What we can say about $E(.,.)$? We can perform as follows
+		\begin{equation*}
+			E(\mathbf{a,b+c}) \odot E(\mathbf{a,b}) = i^{\mathbf{a}(\mathbf{b+c})^T}i^{\mathbf{a}\mathbf{b}^T}D(\mathbf{a,b+c}) \odot D(\mathbf{a,b}) = i^{2\mathbf{a}\mathbf{b}^T} E(\mathbf{a,c})
+		\end{equation*}
+		thus result is  $(-1)^{\mathbf{a}\mathbf{b}^T}E(\mathbf{a,c})$.
+	}
+	\\
+	
+	%\textcolor{red}{
+	%	Also about $(b)$, we notice that result is $i^{-3 \mathbf{b}\mathbf{e}_n^T-\mathbf{b}\mathbf{S}^T-1}$ and considering mod 4 operation, we get the final expression.
+	%}
+	%\\
+	
+	The second vector $S_n+e_n$, that determines the signs, stays the same over the whole sum. Now notice that $E(b+e_n, S_n + e_n) = i^{(b+e_n)(S_n+e_n)^T}E(b + e_n, 0)E(0,S_n + e_n)$.
+	\begin{align*}
+		&\frac{i}{N}(-1)^{\mathbf{e}_n\mathbf{S}\mathbf{e}_n^T} \sum_{\mathbf{b}\in \mathbb{F}_2^m} i^{-\mathbf{b}(\mathbf{S}+\mathbf{I})\mathbf{e}_n^T }E(\mathbf{b}+\mathbf{e}_n,\mathbf{S}_n+\mathbf{e}_n) = \\ &\frac{i}{N}(-1)^{\mathbf{e}_n\mathbf{S}\mathbf{e}_n^T} \sum_{\mathbf{b}\in \mathbb{F}_2^m} i^{-\mathbf{b}(\mathbf{S}+\mathbf{I})\mathbf{e}_n^T } i^{(\mathbf{b}+\mathbf{e}_n)(\mathbf{e}_n\mathbf{S}+\mathbf{e}_n)^T}E(\mathbf{b} + \mathbf{e}_n, 0)E(0,\mathbf{e}_n \mathbf{S} + \mathbf{e}_n)= \\
+		&\frac{i}{N}(-1)^{\mathbf{e}_n\mathbf{S}\mathbf{e}_n^T} \sum_{\mathbf{b}\in \mathbb{F}_2^m}  i^{\mathbf{e}_n \mathbf{S}\mathbf{e}_n^T + 1}E(\mathbf{b} + \mathbf{e}_n, 0)E(0,\mathbf{e}_n \mathbf{S} + \mathbf{e}_n)= \\
+		&\left(\frac{-1}{N}i^{-\mathbf{e}_n\mathbf{S}\mathbf{e}_n^T} \sum_{\mathbf{b}\in \mathbb{F}_2^m}  E(\mathbf{b} + \mathbf{e}_n, 0)\right)E(\mathbf{0},\mathbf{e}_n \mathbf{S} + \mathbf{e}_n) = \\
+		& \left(\frac{-1}{N}i^{-\mathbf{e}_n\mathbf{S}\mathbf{e}_n^T} \sum_{\mathbf{b}\in \mathbb{F}_2^m}  E(\mathbf{b} + \mathbf{e}_n, 0)\right)E(\mathbf{0},\mathbf{e}_n) E(\mathbf{0},\mathbf{e}_n\mathbf{S})
+	\end{align*}
+	Now 
+	$\left[(-1)^{b(e_n+S_n)^T}\right]_{b \in \mathbb{F}_2^m}$ is a row of WHT matrix. 
+	The $E(b+e_n,0)$-part fills the matrix in such a way that every column is a polynomial permutation of the row $\left[(-1)^{b(e_n+S_n)^T}\right]_{b \in \mathbb{F}_2^m}$ (this needs rigorous proof, but it holds expirimentally in Mathematica and intuitionally). Since the WHT-rows are $\pm 1$ eigenvectors with respect to polynomial permutations, we will get a matrix with $\pm 1$ the same WHT-row as every column. \newpage 
+	
+	If this matrix is multiplied by the WHT matrix $H$ we will get a following kind of matrix:
+	
+	\begin{align*}
+		H \frac{1}{N} \left(\sum_{b} (-1)^{b(e_n+S_n)^T} E(b+e_n, 0) \right) i^{e_nS_n^T}E(0, S_n + e_n) = \frac{i^{e_nS_n^T}}{N}ME(0, S_n + e_n)
+	\end{align*}
+	where $M = \begin{pmatrix} 0 & 0 & \cdots & 0 \\
+		\vdots & \vdots &  & \vdots \\
+		0 & 0 &  & 0 \\
+		m_1 & m_2 & \cdots & m_N \\
+		0 & 0 & & 0 \\
+		\vdots & \vdots &  & \vdots \\
+		0 & 0 & \cdots & 0 \\
+	\end{pmatrix}$ and now since $E(0, S_n + e_n)$ is just a diagonal matrix with some sign we get just the expected result. The whole matrix $\frac{i^{e_nS_n^T}}{N}ME(0, S_n + e_n)$ is just of form:
+	\begin{align*}
+		\frac{i^{e_nS_n^T}}{N} \begin{pmatrix} 0 & 0 & \cdots & 0 \\
+			\vdots & \vdots &  & \vdots \\
+			0 & 0 &  & 0 \\
+			s_1m_1 & s_2m_2 & \cdots & s_Nm_N \\
+			0 & 0 & & 0 \\
+			\vdots & \vdots &  & \vdots \\
+			0 & 0 & \cdots & 0 \\
+		\end{pmatrix}
+	\end{align*}
+	
+	This tells us that the shift-and-multiply operation gives an unique peak at a coordinate of a codeword, which determines a row of the $S$-matrix. The sign bits $s_1,...,s_N$ determine a bit at the $b$-vector, when the chirp is written in form $\left[i^{vSv^T + 2vb^T}\right]_{v \in \mathbb{F}^m_2}$.
+	
+	%\xrightarrow[\text{WHT}]{\text{}} \sum_b i^{w(b)-w(a)-b(S+I)e_n^T}E(e_n(S+I), b + e_n)
+	%
+	%\begin{align*}
+	%    &E(a,a(S+I)) \cdot E(b+e_n,b(S+I)) = \delta_{a,b+e_n} E(a,  (b+e_n)(S+I) + b(S+I)) =  \delta_{a,b+e_n} E(a,  e_n(S+I))  =\\ &\delta_{a,b+e_n} E(a,  S_n+e_n)
+	%\end{align*}
+\end{document}
