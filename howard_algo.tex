@@ -1,0 +1,202 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+
+\usepackage{xcolor}
+\usepackage{pifont}
+
+\title{Binary chirps and Howard algorithm}
+\author{Elias Heikkilä, Mahdi Baianifar}
+\date{}
+\setlength{\parindent}{0em}
+\begin{document}
+	\maketitle
+
+\subsection*{Vector version of Howard algorithm}
+Let $\mathbf{S} \in \text{Sym}(m; 2)$ be a binary symmetric matrix and $\mathbf{b} \in \mathbb{F}_2^m$ a binary vector. The transmitted data bits can be written to the upper triangular part of $\mathbf{S}$ and to the vector $m$, resulting to $\frac{m(m+3)}{2}$ bits. Now a binary chirp indexed by $\mathbf{v}$ is defined as $\mathbf{w}_{\mathbf{S,b}} = \dfrac{1}{\sqrt{N}}\left[i^{\mathbf{v^TSv + 2b^Tv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m}$.
+Binary chirp consists of a \textit{mask sequence} $\left[i^{\mathbf{v^TSv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m}$ and a \textit{Hadamard sequence} $\left[(-1)^{\mathbf{b^Tv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m}$. Assume now that we have received a binary chirp $\mathbf{w}$ from the channel (noise omitted for now) and the goal is to decode the bits i.e. the matrix $\mathbf{S}$ and the vector $\mathbf{b}$. The decoding process has following steps
+\begin{enumerate}
+	\item Shift: \\
+		We will shift $\mathbf{w}$ with respect to a Pauli matrix $\mathbf{E}(\mathbf{e}_i, \mathbf{0})$.
+		\begin{align*}
+			\mathbf{wE}(\mathbf{e}_i,\mathbf{0}) &= \dfrac{1}{\sqrt{N}}\left[i^{\mathbf{v^TSv + 2b^Tv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m} \mathbf{E}(\mathbf{e}_i, \mathbf{0}) \\
+			&= \dfrac{1}{\sqrt{N}}\left[i^{\mathbf{v^TSv + 2b^Tv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{e}_i, \mathbf{0}) \\
+			&= \dfrac{1}{\sqrt{N}}\left[i^{\mathbf{v^TSv + 2b^Tv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m} \sum_{\mathbf{v} \in \mathbb{F}_2^m}{|\mathbf{v+e_i}><\mathbf{v}|} \\
+			&= \dfrac{1}{\sqrt{N}}\left[i^{\mathbf{(v+e_i)^TS(v+e_i) + 2b^T(v+a)}}\right]_{\mathbf{v} \in \mathbb{F}_2^m}
+		\end{align*}
+	\item Pointwise multiplication: \\
+	Denote by $\overline{\mathbf{w}}$ the elementwise complex conjugate of $\mathbf{w}$.
+	Now calculate the pointwise multiplication with the shifted codeword.
+	\begin{align*}
+		\overline{\mathbf{w}} \odot \mathbf{wE}(\mathbf{e}_i,\mathbf{0}) &=
+		\dfrac{1}{\sqrt{N}}\left[i^{\mathbf{-v^TSv - 2b^Tv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m} \odot \dfrac{1}{\sqrt{N}}\left[i^{\mathbf{(v+e_i)^TS(v+e_i) + 2b^T(v+e_i)}}\right]_{\mathbf{v} \in \mathbb{F}_2^m} \\
+		&= \dfrac{1}{N} \left[i^{\mathbf{-v^TSv - 2b^Tv + (v+e_i)^TS(v+e_i) + 2b^T(v+e_i)}}\right]_{\mathbf{v} \in \mathbb{F}_2^m} \\
+		&= \dfrac{1}{N}\left[i^{\mathbf{e_i^TSe_i}}(-1)^{\mathbf{v^TSe_i + b^Te_i}}\right]_{\mathbf{v} \in \mathbb{F}_2^m} \\
+		&= \dfrac{(-1)^{\mathbf{b^Te_i}}i^{\mathbf{e_i^TSe_i}}}{N} \left[(-1)^{\mathbf{v^TSe_i}}\right]_{\mathbf{v} \in \mathbb{F}_2^m}
+	\end{align*}
+	\item Hadamard transform: \\
+	Multiply from the left with a naturally ordered Hadamard matrix
+	\begin{align*}
+		&\mathbf{H}_N^{\text{nat}} \dfrac{(-1)^{\mathbf{b^Te_i}}i^{\mathbf{e_i^TSe_i}}}{N} \left[(-1)^{\mathbf{v^TSe_i}}\right]_{\mathbf{v} \in \mathbb{F}_2^m} \\
+		&= \dfrac{(-1)^{\mathbf{b^Te_i}}i^{\mathbf{e_i^TSe_i}}}{N} \frac{1}{\sqrt{N}} \left(\sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u}^T \mathbf{v} } |\mathbf{u}><\mathbf{v}|}\right)  \left[(-1)^{\mathbf{v^TSe_i}}\right]_{\mathbf{v} \in \mathbb{F}_2^m} \\
+		&=  \dfrac{(-1)^{\mathbf{b^Te_i}}i^{\mathbf{e_i^TSe_i}}}{N} \frac{1}{\sqrt{N}} \left(\sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u}^T \mathbf{v} } |\mathbf{u}><\mathbf{v}|}\right) \sum_{\mathbf{v} \in \mathbb{F}_2^m} (-1)^{\mathbf{v^TSe_i}} |\mathbf{v}> \\
+		&= \dfrac{(-1)^{\mathbf{b^Te_i}}i^{\mathbf{e_i^TSe_i}}}{N} \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u}^T \mathbf{v} + \mathbf{v^TSe_i}} |\mathbf{u}>} \\
+		&= \dfrac{(-1)^{\mathbf{b^Te_i}}i^{\mathbf{e_i^TSe_i}}}{N} \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{v^TSe_i} + \mathbf{v^TSe_i}} |\mathbf{Se_i}>} \\
+		&= (-1)^{\mathbf{b^Te_i}}i^{\mathbf{e_i^TSe_i}} \frac{1}{\sqrt{N}} |\mathbf{Se_i} >
+	\end{align*}
+	The last result is a vector with only a single nonzero element at index $\mathbf{Se_i}$. From the index we can uniquely determine the i'th row and column of $\mathbf{S}$
+	\item Scaling and phasing: \\
+	These are more of implementation details. The amplitude of the signal was reduced in the pointwise multiplication. We can scale the signal back to unit length by multiplying with $\dfrac{1}{\sqrt{N}}$. Also the phase can be normalized with a pointwise product with a vector $\left[i^{\mathbf{-e_i^Tb}}\right]_{\mathbf{b} \in \mathbb{F}_2^m}$
+	\begin{align*}
+		&(-1)^{\mathbf{b^Te_i}}i^{\mathbf{e_i^TSe_i}} \frac{1}{\sqrt{N}} |\mathbf{Se_i} > \odot \dfrac{1}{\sqrt{N}} \left[i^{\mathbf{-e_i^Tb}}\right]_{\mathbf{b} \in \mathbb{F}_2^m} \\
+		&= (-1)^{\mathbf{b^Te_i}}i^{\mathbf{e_i^TSe_i}} |\mathbf{Se_i} >\odot \sum_{\mathbf{b} \in \mathbb{F}_2^m} i^{\mathbf{-e_i^Tb}} | \mathbf{b} > \\
+		&= (-1)^{\mathbf{b^Te_i}} |\mathbf{Se_i} >
+	\end{align*}
+	Now the vector element is $\pm 1$ and the sign determines the bit $b_i$ uniquely.
+\end{enumerate}
+
+\subsection*{Binary chirp codebook}
+Now the symplectic matrix $\mathbf{T}_\mathbf{S} = \begin{bmatrix} \mathbf{I} & \mathbf{S} \\ \mathbf{0} & \mathbf{I} \end{bmatrix}$, where $\mathbf{S}$ is a binary symmetric matrix, corresponds to the Clifford operator $\mathbf{g} = \text{diag}(i^{\mathbf{v}\mathbf{S}\mathbf{v}^T})$. (This is where the generalization happens when we consider arbitrary binary matrices or matrices with half-elements in the generalized setting). \\	 
+
+When we act on Walsh-Hadamard matrix with $\mathbf{g}$, we get a matrix of codewords determined by $\mathbf{S}$. We can use two different approaches.
+
+\begin{enumerate}
+	\item First case:
+	$\mathbf{W=gH}$. In this case the codewords are the columns (or rows) of the following matrix:
+	
+	\begin{align}
+		\mathbf{W} &= \mathbf{g}\mathbf{H} = \frac{1}{\sqrt{N}}\mathbf{g}\left(\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a})\right) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a}) \label{WfirstDef} \\
+		\overline{\mathbf{W}} &= \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{-w(\mathbf{a})}(-1)^{w(\mathbf{a})}\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a}) \label{WbarFirstDef}
+	\end{align}
+	\item Second case: $\mathbf{W=gHg}^H$. In this case we have
+	\begin{align}
+		\mathbf{W} &= \mathbf{g}\mathbf{H}\mathbf{g}^H = \frac{1}{\sqrt{N}}\mathbf{g}^H\left(\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a})\right)\mathbf{g} = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a})\mathbf{g}^H\nonumber  \\ 
+		&=\frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a, a+aS}) \label{WsecDef}
+	\end{align}
+	where the last equality come from the fact that $\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a}) \mathbf{g}^H = +\mathbf{E}(\mathbf{a,a+a S})$. Here we can prove it as follows
+	\begin{align*}
+		\mathbf{g} \mathbf{E}(\mathbf{a,a}) \mathbf{g}^H &=\sum_{\mathbf{v} \in \mathbb{F}^m_2}{i^{\mathbf{v S v^T}} |\mathbf{v}><\mathbf{v}|} i^{\mathbf{a}\mathbf{a}^T}\sum_{\mathbf{u} \in \mathbb{F}^m_2}{(-1)^{\mathbf{a}\mathbf{u}^T} |\mathbf{u+a}><\mathbf{u}|}\sum_{\mathbf{z} \in \mathbb{F}^m_2}{i^{-\mathbf{z S z^T}} |\mathbf{z}><\mathbf{z}|} \nonumber \\
+		&= i^{\mathbf{a}\mathbf{a}^T}\sum_{\mathbf{u} \in \mathbb{F}^m_2}{i^{\mathbf{(u+a)S}(\mathbf{u+a})^T} (-1)^{\mathbf{a}\mathbf{u}^T}i^{-\mathbf{uS}\mathbf{u}^T} |\mathbf{u+a}><\mathbf{u}|} \nonumber \\
+		&= i^{\mathbf{a+aS}\mathbf{a}^T}\sum_{\mathbf{u} \in \mathbb{F}^m_2}{(-1)^{(\mathbf{a+aS})\mathbf{u}^T} |\mathbf{u+a}><\mathbf{u}|}= i^{(\mathbf{a+aS})\mathbf{a}^T}\mathbf{D}(\mathbf{a, a+aS}) = \mathbf{E}(\mathbf{a, a+aS})
+	\end{align*}
+	Also, from Eq. \ref{WsecDef}, we can see that element-wise conjugate or $\mathbf{W}$, can be written as
+	\begin{equation}\label{WbarSecDef}
+		\overline{\mathbf{W}} = \frac{1}{\sqrt{N}} \sum_a i^{-w(\mathbf{a})}(-1)^{\mathbf{a}(\mathbf{a}\mathbf{S} + \mathbf{a})^T} E(\mathbf{a}, \mathbf{a}(\mathbf{S} + \mathbf{I}))
+	\end{equation}
+\end{enumerate}
+In both cases $\overline{\mathbf{W}}$ denotes the elementwise complex conjugate of $\mathbf{W}$.
+
+\subsection*{Howard algorithm}
+Now calculate a "shift" of the codeword matrix according to the definition of the two aforementioned cases.
+\begin{enumerate}
+	\item First case: $\mathbf{W=gH}$. Considering Eq. \ref{WfirstDef}, we have
+	\begin{align*}
+		\mathbf{E}(\mathbf{e}_j, \mathbf{0})\mathbf{W} = &\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a}) 
+	\end{align*}
+	We must calculate $\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a})$. We have
+	\begin{align*}
+		\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a})& = 	i^{w(\mathbf{a})}  \sum_{\mathbf{v} \in \mathbb{F}_2^m}{ |\mathbf{v}+\mathbf{e}_j><\mathbf{v}|}  \sum_{\mathbf{u} \in \mathbb{F}_2^m}{i^{\mathbf{u S}\mathbf{u}^T} |\mathbf{u}><\mathbf{u}|}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{ (-1)^{\mathbf{x}\mathbf{a}^T}|\mathbf{x+a}><\mathbf{x}|} \\
+		\\
+		&= i^{w(\mathbf{a})}  \sum_{\mathbf{v} \in \mathbb{F}_2^m}{ |\mathbf{v}+\mathbf{e}_j><\mathbf{v}|}  \sum_{\mathbf{u} \in \mathbb{F}_2^m}{i^{\mathbf{u S}\mathbf{u}^T} |\mathbf{u}><\mathbf{u}|} (-1)^{(\mathbf{u+a})\mathbf{a}^T}|\mathbf{u}><\mathbf{u+a}| \\
+		&= i^{w(\mathbf{a})} \sum_{\mathbf{v} \in \mathbb{F}_2^m}{i^{\mathbf{v}\mathbf{S}\mathbf{v}^T}(-1)^{(\mathbf{v+a})\mathbf{a}^T} |\mathbf{v}+\mathbf{e}_j><\mathbf{v+a}|} \\
+		& = i^{w(\mathbf{a})} \sum_{\mathbf{v} \in \mathbb{F}_2^m}{i^{(\mathbf{v+a})\mathbf{S}(\mathbf{v+a})^T}(-1)^{\mathbf{v}\mathbf{a}^T} |\mathbf{v+a}+\mathbf{e}_j><\mathbf{v}|}
+	\end{align*}
+	Then, we have
+	\begin{align*}
+		\mathbf{E}(\mathbf{e}_j, \mathbf{0})\mathbf{W} &= \frac{1}{\sqrt{N}}  \sum_{\mathbf{a} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}{ (-1)^{w(\mathbf{a})} i^{(\mathbf{v+a})\mathbf{S}(\mathbf{v+a})^T}(-1)^{\mathbf{v}\mathbf{a}^T} |\mathbf{v+a}+\mathbf{e}_j><\mathbf{v}|}}\\
+		& = \frac{1}{\sqrt{N}}  \sum_{\mathbf{a} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}{ (-1)^{w(\mathbf{a})} i^{\mathbf{a}\mathbf{S}\mathbf{a}^T}(-1)^{\mathbf{v}\mathbf{a}^T} |\mathbf{a}+\mathbf{e}_j><\mathbf{v}|}}
+	\end{align*}
+	where at the last equality, we replaced $\mathbf{a=a+v}$. 
+	
+	Denote by $\overline{\mathbf{W}}$ the elementwise complex conjugate of the matrix $\mathbf{W}$. Consider the pointwise product
+	
+	\begin{align*}
+		\overline{\mathbf{W}} \odot \mathbf{E}(\mathbf{e}_j, 0)\mathbf{W}& = \frac{1}{N} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a})\odot \sum_{\mathbf{b} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}{ (-1)^{w(\mathbf{b})} i^{\mathbf{b}\mathbf{S}\mathbf{b}^T}(-1)^{\mathbf{v}\mathbf{b}^T} |\mathbf{b}+\mathbf{e}_j><\mathbf{v}|}}\\
+		&=\frac{1}{N} \sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}}i^{w(\mathbf{a})}(-1)^{(\mathbf{b+v})\mathbf{b}^T}  i^{\mathbf{b}\mathbf{S}\mathbf{b}^T} (\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a}))\odot (|\mathbf{b}+\mathbf{e}_j><\mathbf{v}|) }
+	\end{align*}
+	Thus, we must calculate $(\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a}))\odot (|\mathbf{b}+\mathbf{e}_j><\mathbf{v}|)$
+	\begin{align*}
+		\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a}) &=i^{w(\mathbf{a})} \sum_{\mathbf{u} \in \mathbb{F}_2^m}{i^{-\mathbf{u S}\mathbf{u}^T} |\mathbf{u}><\mathbf{u}|}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{ (-1)^{\mathbf{x}\mathbf{a}^T}|\mathbf{x+a}><\mathbf{x}|} \\
+		&=i^{-w(\mathbf{a})} \sum_{\mathbf{u} \in \mathbb{F}_2^m}{(-1)^{\mathbf{u}\mathbf{a}^T}i^{-\mathbf{u S}\mathbf{u}^T} |\mathbf{u}><\mathbf{u+a}|},
+	\end{align*} 
+	then we get
+	\begin{align*}
+		&\overline{\mathbf{W}} \odot \mathbf{E}(\mathbf{e}_n, 0)\mathbf{W} = \\
+		& \frac{1}{N} \sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}}(-1)^{(\mathbf{b+v})\mathbf{b}^T}  i^{\mathbf{b}\mathbf{S}\mathbf{b}^T} \sum_{\mathbf{u} \in \mathbb{F}_2^m}{(-1)^{\mathbf{u}\mathbf{a}^T}i^{-\mathbf{u S}\mathbf{u}^T} |\mathbf{u}><\mathbf{u+a}|} \odot (|\mathbf{b}+\mathbf{e}_j><\mathbf{v}|) }
+	\end{align*}
+	We notice that $|\mathbf{u}><\mathbf{u+a}| \odot (|\mathbf{b}+\mathbf{e}_j><\mathbf{v}|) = 1$ iff $\mathbf{u}=\mathbf{b}+\mathbf{e}_j, \mathbf{u+a}=\mathbf{v}$. Then, we can substitute $\mathbf{u} = \mathbf{b}+\mathbf{e}_j$ and $\mathbf{v}=\mathbf{a}+\mathbf{b}+\mathbf{e}_j$. Thus, we have
+	\begin{align}
+		&\frac{1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}^m_2}{i^{\mathbf{b S b}^T -(\mathbf{b+e}_j)\mathbf{S}(\mathbf{b+e}_j)^T} (-1)^{(2\mathbf{b}+\mathbf{a+e}_j)\mathbf{b}^T+(\mathbf{b+e}_j)\mathbf{a}^T} |\mathbf{b+e}_j> <\mathbf{a+b+e}_j |    } }\nonumber \\
+		&=\frac{1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}^m_2}{i^{-2\mathbf{b S }\mathbf{e}_j^T-\mathbf{e}_j \mathbf{S e}_j^T} (-1)^{(\mathbf{a+b})\mathbf{e}_j^T} |\mathbf{b+e}_j> <\mathbf{a+b+e}_j |    } }\nonumber\\
+		&=\frac{1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}^m_2}{i^{-2\mathbf{(a+b) S }\mathbf{e}_j^T+\mathbf{e}_j \mathbf{S e}_j^T} (-1)^{(\mathbf{b+e}_j)\mathbf{e}_j^T} |\mathbf{a+b}> <\mathbf{b} |    } }\nonumber \\
+		&=\frac{-1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}^m_2}{i^{-2\mathbf{a S }\mathbf{e}_j^T+\mathbf{e}_j \mathbf{S e}_j^T} (-1)^{(\mathbf{e}_j+\mathbf{e}_j\mathbf{S})\mathbf{b}^T} |\mathbf{b+a}> <\mathbf{b} |    } } \nonumber \\
+		&=\frac{-1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{i^{-2\mathbf{a S }\mathbf{e}_j^T+\mathbf{e}_j \mathbf{S e}_j^T} \mathbf{D(a,e}_j+\mathbf{e}_j\mathbf{S})} \nonumber\\
+		&=\frac{-i^{\mathbf{e}_j \mathbf{S e}_j^T}}{N} \left(\sum_{\mathbf{a} \in \mathbb{F}^m_2}{(-1)^{\mathbf{a S }\mathbf{e}_j^T} \mathbf{D(a,0)}} \right) \mathbf{D(0},\mathbf{e}_j+\mathbf{e}_j \mathbf{S}) \label{FinalRes}
+	\end{align}
+	\\
+	
+	By considering expression inside the parentheses in  Eq. \eqref{FinalRes} and multiplying it by $\mathbf{H}_N^{\text{nat}}$ from left, we have
+	\begin{align}
+		&\mathbf{H}_N^{\text{nat}} \sum_{\mathbf{a} \in \mathbb{F}^m_2}{(-1)^{\mathbf{a S }\mathbf{e}_j^T} \mathbf{D(a,0)}}= \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} \mathbf{v}^T } |\mathbf{u}><\mathbf{v}|} \sum_{\mathbf{a}, \mathbf{x} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{S}_j \mathbf{a}^T } |\mathbf{x+a}><\mathbf{x}|} \nonumber \\
+		&=\frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{x}, \mathbf{a} \in \mathbf{F}_2^m}{(-1)^{(\mathbf{x+a})\mathbf{u}^T} (-1)^{\mathbf{S}_j \mathbf{a}^T}|\mathbf{u}><\mathbf{x}| } \nonumber \\ 
+		&=\frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{x} \in \mathbf{F}_2^m}{(-1)^{\mathbf{u} \mathbf{x}^T} \sum_{ \mathbf{a} \in \mathbf{F}_2^m}{(-1)^{(\mathbf{u+S}_j)\mathbf{a}^T}} |\mathbf{u}><\mathbf{x}| }  \nonumber \\
+		&=\sqrt{N} \sum_{ \mathbf{x} \in \mathbf{F}_2^m}{(-1)^{\mathbf{S}_j \mathbf{x}^T} |\mathbf{S}_j><\mathbf{x}| }\label{HsubRes}
+	\end{align}
+	where the last equality come from the fact that 
+	\begin{equation}
+		\sum_{ \mathbf{a} \in \mathbf{F}_2^m}{(-1)^{(\mathbf{u+S}_j)\mathbf{a}^T}} = 
+		\begin{cases}
+			0 & \qquad \mathbf{u} \neq \mathbf{S}_j \\
+			N & \qquad \mathbf{u} = \mathbf{S}_j
+		\end{cases}
+	\end{equation}
+	
+	
+	We notice that $|\mathbf{S}_j>$ is a map between $j$th row of $\mathbf{S}$ and basic vectors in $2^m$. Actually $|\mathbf{S}_j>$ has a non-zero element at location of decimal mapping of $j$th row of $\mathbf{S}$. Thus finally considering \eqref{FinalRes} and \eqref{HsubRes}, we have
+	\begin{align}
+		\mathbf{H}_N^{\text{nat}}\overline{\mathbf{W}} \odot \mathbf{E}(\mathbf{e}_n, 0)\mathbf{W} = \frac{-i^{\mathbf{e}_j \mathbf{S e}_j^T}}{\sqrt{N}} \sum_{ \mathbf{x} \in \mathbf{F}_2^m}{(-1)^{\mathbf{e}_j \mathbf{x}^T} |\mathbf{S}_j><\mathbf{x}| }\label{FinHcalRes}
+	\end{align}
+	\item Second case: $\mathbf{W=gHg}^H$. Now calculate a "shift" of the codeword matrix using Eq. \ref{WsecDef}, We have
+	\begin{align}
+		\mathbf{E}(\mathbf{e}_j, \mathbf{0})\mathbf{W} &= \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{E}(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a}) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}i^{-\mathbf{e}_j(\mathbf{a}\mathbf{S} + \mathbf{a})^T}\mathbf{E}(\mathbf{a} + \mathbf{e}_j,\mathbf{a}\mathbf{S} + \mathbf{a}) \nonumber \\ 
+		&= \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})-\mathbf{a}(\mathbf{S} + \mathbf{I})\mathbf{e}_j^T}\mathbf{E}(\mathbf{a} + \mathbf{e}_j,\mathbf{a}\mathbf{S} + \mathbf{a}) \label{EjWSecDef}
+	\end{align}
+	
+	
+	Using Eq. \ref{WbarSecDef} and \ref{EjWSecDef}, we have
+	
+	\begin{align*}
+		\overline{\mathbf{W}} \odot \mathbf{E}(\mathbf{e}_j, 0)\mathbf{W} = \frac{1}{N} \sum_a i^{-w(\mathbf{a})}(-1)^{\mathbf{a}(\mathbf{a}\mathbf{S} + \mathbf{a})^T} E(\mathbf{a}, \mathbf{a}(\mathbf{S} + \mathbf{I})) \odot \sum_b i^{w(\mathbf{b}) - \mathbf{b}(\mathbf{S} + \mathbf{I})\mathbf{e}_j^T} E(\mathbf{b} + \mathbf{e}_j, \mathbf{b}(\mathbf{S} + \mathbf{I}))
+	\end{align*}
+	
+	so this means that
+	\begin{align}
+		&=\frac{1}{N} \sum_{\mathbf{a}\in \mathbb{F}_2^m} (-1)^{\mathbf{a}(\mathbf{a}\mathbf{S} + \mathbf{a})^T} i^{-w(\mathbf{a})} E(\mathbf{a}, \mathbf{a}(\mathbf{S} + \mathbf{I})) \odot \sum_{\mathbf{b}\in \mathbb{F}_2^m} i^{w(\mathbf{b}) - \mathbf{b}(\mathbf{S} + \mathbf{I})\mathbf{e}_j^T} E(\mathbf{b} + \mathbf{e}_j, \mathbf{b}(\mathbf{S} + \mathbf{I})) \nonumber \\
+		&=\frac{1}{N}\sum_{\mathbf{a},\mathbf{b}\in \mathbb{F}_2^m} \delta_{\mathbf{a}, \mathbf{b} + \mathbf{e}_j} (-1)^{w(\mathbf{b})-w(\mathbf{a})} i^{\mathbf{b S b}^T-\mathbf{a S a}^T} D(\mathbf{a}, \mathbf{a}(\mathbf{S}+\mathbf{I})) \odot D(\mathbf{b} + \mathbf{e}_j, \mathbf{b}(\mathbf{S}+\mathbf{I})) \nonumber \\
+		&=\frac{1}{N}\sum_{\mathbf{b}\in \mathbb{F}_2^m}{(-1)^{w(\mathbf{b})-w(\mathbf{b}\oplus \mathbf{e}_j)} i^{\mathbf{b S b}^T-\mathbf{(\mathbf{b}\oplus \mathbf{e}_j) S }(\mathbf{b}\oplus \mathbf{e}_j)^T} } \times \nonumber\\
+		&\quad D(\mathbf{b}+\mathbf{e}_j, \mathbf{b}(\mathbf{S}+\mathbf{I}) +\mathbf{e}_j (\mathbf{S}+\mathbf{I})) \odot D(\mathbf{b} + \mathbf{e}_j, \mathbf{b}(\mathbf{S}+\mathbf{I})) \nonumber \\
+		&\stackrel{(a)}{=}\frac{-1}{N}\sum_{\mathbf{b}\in \mathbb{F}_2^m} i^{\mathbf{b S b}^T-\mathbf{(\mathbf{b}\oplus \mathbf{e}_j) S }(\mathbf{b}\oplus \mathbf{e}_j)^T} D(\mathbf{b} + \mathbf{e}_j, \mathbf{e}_j(\mathbf{S}+\mathbf{I}))   \nonumber \\
+		&=\frac{-i^{-\mathbf{e}_j \mathbf{S e}_j}}{N}\sum_{\mathbf{b}\in \mathbb{F}_2^m} (-1)^{\mathbf{b Se}_j^T} D(\mathbf{b} + \mathbf{e}_j, \mathbf{e}_j(\mathbf{S}+\mathbf{I}))
+	\end{align}
+	Thus that will be similar to the case that, we considered $\mathbf{w=gH}$ (refer to Eq. \ref{FinalRes}) and hence, the same procedure as in Eq. \ref{HsubRes} can be considered by multiplication of Hadamard matrix from the left and we will get similar result to Eq. \ref{FinHcalRes}. 
+	
+	We notice about $(a)$, it comes from the fact that If $\mathbf{a} \neq \mathbf{b} \implies E(\mathbf{a}, \mathbf{c}) \odot E(\mathbf{b}, \mathbf{d}) = \mathbf{0}$. Why this is true? First we notice that 
+	\begin{equation*}
+		\left(\mathbf{A} \otimes \mathbf{B} \right) \odot \left(\mathbf{C} \otimes  \mathbf{D} \right) = \left(\mathbf{A} \odot \mathbf{C} \right) \otimes \left(\mathbf{B} \odot \mathbf{D}\right)
+	\end{equation*}	
+	Then we notice that $\mathbf{x}$ changes position of diagonal to anti-diagonal elements and thus when consider above mentioned point we have $\left(\mathbf{x}^{a_1} \mathbf{z}^{b_1}  \right) \odot \left(\mathbf{x}^{c_1} \mathbf{z}^{d_1}  \right)$ when $a_1 \neq c_1$ result will be $\odot$ of diagonal and anti-diagonal and hence will be a all zero matrix. Also, we notice that
+	$D(\mathbf{a, b+c}) \odot D(\mathbf{a, b})=D(\mathbf{a, c})$. How we can prove that? Here is some insight. By considering the definition, it is suffice to consider first element for example:
+	\begin{equation*}
+		\mathbf{x}^{a_1}\mathbf{z}^{b_1+c_1} \odot \mathbf{x}^{a_1}\mathbf{z}^{b_1}
+	\end{equation*}
+	we have 8 different cases here, by checking each of them and considering the fact that $\mathbf{x}\mathbf{z}\odot \mathbf{x}\mathbf{z} = \mathbf{x}$ and $\mathbf{x}\odot \mathbf{x}\mathbf{z} = \mathbf{x}\mathbf{z}$, we can conclude the result. What we can say about $E(.,.)$? We can perform as follows
+	\begin{equation*}
+		E(\mathbf{a,b\oplus c}) \odot E(\mathbf{a,b}) = i^{\mathbf{a}(\mathbf{b\oplus c})^T}i^{\mathbf{a}\mathbf{b}^T}D(\mathbf{a,b+c}) \odot D(\mathbf{a,b}) = i^{2(\mathbf{b+b}*\mathbf{c})\mathbf{a}^T} E(\mathbf{a,c})
+	\end{equation*}
+	where $*$ denote the element-wise product. Thus result is  $(-1)^{(\mathbf{b+b}*\mathbf{c})\mathbf{a}^T}E(\mathbf{a,c})$. Hence for getting rid of the element-wise multiplication, we simply replaced the $E(.,.)$ by $D(.,.)$.
+	
+\end{enumerate}
+
+\end{document}

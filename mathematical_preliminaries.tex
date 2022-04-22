@@ -1,0 +1,123 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+
+\usepackage{xcolor}
+\usepackage{pifont}
+
+\title{Mathematical foundations for binary chirps}
+\author{Elias Heikkilä, Mahdi Baianifar}
+\date{}
+\setlength{\parindent}{0em}
+\begin{document}
+	\maketitle
+
+
+\subsection*{Basic definitions}
+Define $2 \times 2$ Pauli matrices: $\mathbf{I}_2, \mathbf{X} = \begin{bmatrix} 0 && 1 \\ 1 && 0 \end{bmatrix}, \mathbf{Z} = \begin{bmatrix} 1 && 0 \\ 0 && -1 \end{bmatrix}, \mathbf{Y} = i\mathbf{X}\mathbf{Z} = \begin{bmatrix} 0 && -i \\ i && 0 \end{bmatrix}$. Pauli matrices are Hermitian.
+Let $m \in \mathbb{N}$ and $N = 2^m$. Define a $N \times N$ $\mathbf{D}$-matrix with binary vectors $\mathbf{a} = (a_1, ..., a_m), \mathbf{b} = (b_1,..., b_m) \in \mathbb{F}_2^m$ as follows:
+\begin{align*}
+	\mathbf{D}(\mathbf{a}, \mathbf{b}) = \mathbf{X}^{a_1}\mathbf{Z}^{b_1} \otimes \cdots \otimes \mathbf{X}^{a_m}\mathbf{Z}^{b_m}.
+\end{align*}
+Now $N \times N$ Pauli matrix is defined as $\mathbf{E}(\mathbf{a}, \mathbf{b}) = i^{\mathbf{a}\mathbf{b}^T}\mathbf{D}(\mathbf{a}, \mathbf{b})$. It is clearly Hermitian as there are imaginary units for every $\mathbf{XZ}$ term, so they can be replaced by $\mathbf{Y}$ matrices. The tensor product is Hermitian as every element in the product is Hermitian.
+\subsection*{Hadamard matrices}
+Denote by $\mathbf{H}_2 = \dfrac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix}$ the $2 \times 2$ Walsh-Hadamard matrix. Define $N\times N$ Walsh-Hadamard matrix as a tensor product $\mathbf{H}_N = \mathbf{H}^{\otimes m}_2$. Now we can notice that $\mathbf{H}_2 = \frac{1}{\sqrt{2}}(\mathbf{I} - \mathbf{XZ})$ and by distributivity, the tensor product gets forms
+\begin{equation}\label{HadamardNonNat}
+	\mathbf{H}_N = \bigotimes_{1=1}^m \mathbf{H}_2 =	\bigotimes_{i = 1}^m \frac{1}{\sqrt{2}} (\mathbf{I} - \mathbf{XZ}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a},\mathbf{a}) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0},\mathbf{a})\mathbf{D}(\mathbf{a},\mathbf{0}).
+\end{equation}
+We can also continue calculations to give more equivalent forms
+\begin{align*}
+	\frac{1}{\sqrt{N}}	\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}} \prod_{i = 1}^m (\mathbf{I} + i\mathbf{E}(\mathbf{e}_i, \mathbf{e}_i)) = \frac{1}{\sqrt{N}} \prod_{i = 1}^m (\mathbf{I} - \mathbf{D}(\mathbf{e}_i, \mathbf{e}_i))
+\end{align*}
+
+
+% TODO get rid of the signs in sum of D matrices and use the Hadamard matrix of the form \sum D(a,a).
+
+% TODO Find a reference or write a proof that binary symmetric matrix can be written as a sum of at most m + 1 transvections.
+% Also it would be great to find explicitly how the CLifford g = diag(i^xSx) is decomposed into transvections.
+
+This is the version of Hadamard matrix where the diagonal is all ones. We can have the "naturally" ordered Hadamard matrix by considering a product $\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}^{\otimes m}$. As $\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix} \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, we can switch between the different versions by multiplying $\mathbf{H}_N\mathbf{X}^{\otimes m}$ i.e. reversing the order of the columns.
+There is a neat sum form for the naturally ordered Hadamard:
+\begin{align*}
+	\mathbf{H}^{\text{nat}}_N = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0}, \mathbf{a}) \mathbf{D}(\overline{\mathbf{a}}, \mathbf{0})
+\end{align*}
+where $\overline{\mathbf{a}}$ is a bitwise complement of $\mathbf{a}$. We will denote the "all ones diagonal" version of $N \times N$ Walsh-Hadamard matrix simply by $\mathbf{H}$. 
+Walsh-Hadamard matrix belongs to the Clifford group as it permutes the Pauli group. Walsh-Hadamard matrix corresponds to the symplectic matrix $\mathbf{F} = \begin{bmatrix}
+	\mathbf{0} & \mathbf{I} \\
+	\mathbf{I} & \mathbf{0}
+\end{bmatrix}$
+so this means that if we conjugate $\mathbf{E}(\mathbf{a},\mathbf{b})$ with the Walsh-Hadamard matrix $\mathbf{H}$, we will swap the places of $\mathbf{a}$ and $\mathbf{b}$: $\mathbf{H}^H\mathbf{E}(\mathbf{a},\mathbf{b})\mathbf{H} = \pm \mathbf{E}(\left[\mathbf{a},\mathbf{b}\right]\mathbf{F}) = \pm \mathbf{E}(\mathbf{b},\mathbf{a})$. Now it is clear that Walsh-Hadamard matrix gives an isomorphism between the $\mathcal{X}$-group: $\mathcal{X} = \{\mathbf{E}(\mathbf{a},\mathbf{0}) \mid \mathbf{a} \in \mathbb{F}^m_2 \}$ and $\mathcal{Z}$-group: $\mathcal{Z} = \{\mathbf{E}(\mathbf{0},\mathbf{b}) \mid \mathbf{b} \in \mathbb{F}^m_2 \}$ since $\mathbf{H}^H\mathcal{X}\mathbf{H} = \mathcal{Z}$. The $\mathcal{X}$-group is a maximal commuting subgroup of the Pauli group.
+\\
+
+\subsection{PRELIMINARIES}
+Before considering the definition of the binary Chirps, we discuss little about some main theorems that will be used hereafter.
+
+
+First, we notice that 
+\begin{equation}\label{Xtypes}
+	\mathbf{D}\left(\mathbf{a}, \mathbf{0}\right) = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{|\mathbf{v+a}><\mathbf{v}|}
+\end{equation} 
+To see this fact, first we notice that $\mathbf{x} = |0><1| + |1><0|$ and also $\mathbf{I} = |0><0| + |1><1|$, consider the fact that 
+\begin{equation*}
+	\mathbf{x}^{a_1}  = (1-a_1)\bigg{(}|0><0| + |1><1|\bigg{)}+a_1 \bigg{(} |0><1| + |1><0| \bigg{)}
+\end{equation*}
+Then, we have
+\begin{align*}
+	\mathbf{x}^{a_1} \otimes \mathbf{x}^{a_2} =& (1-a_1)(1-a_2)\bigg{(} |00><00|+|01><01|+|10><10|+|11><11| \bigg{)}\\
+	&+ (1-a_1)a_2\bigg{(} |00><01|+|01><00|+|10><11|+|11><10| \bigg{)} \\
+	&+a_1(1-a_2)\bigg{(} |00><10|+|01><11|+|10><00|+|11><01| \bigg{)} \\
+	&+a_1 a_2 \bigg{(} |00><11|+|01><10|+|10><01|+|11><00| \bigg{)}
+\end{align*}
+Then it can be seen that $x$ shifts the basis vectors according to the vector $\mathbf{a}$. Hence it can be seen that Eq. \eqref{Xtypes} is correct.
+
+
+Using similar approach, we can see that 
+\begin{equation}\label{Ztypes}
+	\mathbf{D}\left(\mathbf{0},\mathbf{a}\right) = \sum_{\mathbf{v}\in \mathbb{F}_2^m}{ (-1)^{\mathbf{a} \mathbf{v}^T} |\mathbf{v}><\mathbf{v}|}
+\end{equation}
+Then combining Eq. \eqref{Xtypes} and \eqref{Ztypes}, we have 
+\begin{align}\label{XZtypes}
+	\mathbf{D}\left(\mathbf{a}, \mathbf{b}\right) &=\mathbf{D}\left(\mathbf{a}, \mathbf{0}\right) \mathbf{D}\left(\mathbf{0}, \mathbf{b}\right) = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{|\mathbf{v+a}><\mathbf{v}|}  \sum_{\mathbf{v}'\in \mathbb{F}_2^m}{ (-1)^{\mathbf{v}' \mathbf{b}^T} |\mathbf{v}'><\mathbf{v}'|} \nonumber \\
+	& = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{(-1)^{\mathbf{v} \mathbf{b}^T} |\mathbf{v+a}><\mathbf{v}|}
+\end{align}
+
+Also, we can rewrite $\mathbf{H}_N^{\text{nat}}$ as follows
+\begin{equation}\label{Hrefomed}
+	\mathbf{H}_N^{\text{nat}} = \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} \mathbf{v}^T } |\mathbf{u}><\mathbf{v}|}
+\end{equation}
+But how? First we start with the not-natural definition of the Hadamard matrix i.e., Eq. \ref{HadamardNonNat} and considering  $\mathbf{H}_N = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})} \mathbf{D}\left( \mathbf{a}, \mathbf{a} \right)$ and substituting \eqref{XZtypes}, we get
+\begin{equation}\label{HnotNat}
+	\mathbf{H}_N = \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} (\mathbf{v+u})^T } |\mathbf{u}><\mathbf{v}|}
+\end{equation}
+that differs from	Eq. \eqref{Hrefomed}!! Since \eqref{HnotNat} is related with non-natural Hadamard gate, however, Eq. \eqref{Hrefomed} is used for natural Hadamard gate. We notice that $\mathbf{H}_N^{\text{nat}} = \mathbf{H}\mathbf{X}^{\otimes m}$, using \eqref{HnotNat}, we get
+\begin{align*}
+	&\frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} (\mathbf{v+u})^T } |\mathbf{u}><\mathbf{v}|}\mathbf{D}(\mathbf{1,0}) = \\
+	& \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} (\mathbf{v+u})^T } |\mathbf{u}><\mathbf{v}|}\sum_{\mathbf{x} \in \mathbf{F}_2^m}{ |\mathbf{x+1}><\mathbf{x}|} \\
+	& =  \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} (\mathbf{v+u+1})^T } |\mathbf{u}><\mathbf{v}|}
+\end{align*}
+where $\mathbf{u}(\mathbf{v+u+1})^T=\mathbf{u}(\mathbf{v}^T$ since $\mathbf{u}(\mathbf{u+1})^T=0$, and hence, we get the \eqref{Hrefomed}.
+
+Hereafter, we try to show that column of Hadamard matrix are eigenvectors of $D\left(\mathbf{a,0}\right)$. We can see that, $i$th column of $\mathbf{H}_N$ can be written as 
+\begin{equation}\label{ithColHn}
+	\mathbf{H}_N^{\text{nat}} \mathbf{e}_i = \mathbf{H}_N^{\text{nat}} | \mathbf{v}_{\mathbf{e}_i}> = \frac{1}{\sqrt{N}} \sum_{\mathbf{u} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} \mathbf{v}_{\mathbf{e}_i}^T } |\mathbf{u}>}
+\end{equation}
+Considering Eq. \eqref{Xtypes} and \eqref{ithColHn}, we have
+\begin{align*}
+	\mathbf{D}\left(\mathbf{a}, \mathbf{0} \right) \mathbf{H}_N^{\text{nat}} | \mathbf{v}_{\mathbf{e}_i} > \: & = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{|\mathbf{v+a}><\mathbf{v}|}  \frac{1}{\sqrt{N}} \sum_{\mathbf{u} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} \mathbf{v}_{\mathbf{e}_i}^T } |\mathbf{u} > } \\
+	& = \frac{1}{\sqrt{N}} \sum_{\mathbf{v} \in \mathbb{F}_2^m}{(-1)^{\mathbf{v}\mathbf{v}_{\mathbf{e}_i}^T } |\mathbf{v+a}>} \\
+	& = \frac{1}{\sqrt{N}} \sum_{\mathbf{v} \in \mathbb{F}_2^m}{(-1)^{\left(\mathbf{v+a}\right)\mathbf{v}_{\mathbf{e}_i}^T } |\mathbf{v}>}\\
+	& = (-1)^{\mathbf{a}\mathbf{v}_{\mathbf{e}_i}^T} \mathbf{H}_N^{\text{nat}} \mathbf{e}_i
+\end{align*} 
+Also, we can use other approach as follows
+\begin{align*}
+	\mathbf{D}\left(\mathbf{b},\mathbf{0}\right) \mathbf{H}_N |\mathbf{v}>& \: = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m}{\mathbf {D}\left(\mathbf{b},\mathbf{0}\right) \mathbf{D}\left(\mathbf{0},\mathbf{a}\right) \mathbf{D}\left(\mathbf{a},\mathbf{0}\right)}|\mathbf{v}> = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m}{(-1)^{\mathbf{a}\mathbf{a}^T} \mathbf{D}\left(\mathbf{b}+\mathbf{a},\mathbf{a}\right)}|\mathbf{v}> \\
+	& = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m}{(-1)^{(\mathbf{a+v})\mathbf{a}^T} | \mathbf{v}+\mathbf{a}+\mathbf{b}>}=\frac{1}{\sqrt{N}}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{(-1)^{(\mathbf{b+x+v})(\mathbf{x+b})^T} | \mathbf{v}+\mathbf{x}>}= \\
+	&\frac{(-1)^{(\mathbf{v+b})
+			\mathbf{b}^T }}{\sqrt{N}}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{(-1)^{(\mathbf{v+x})\mathbf{x}^T} | \mathbf{v}+\mathbf{x}>}=\frac{(-1)^{(\mathbf{v+b})
+			\mathbf{b}^T }}{\sqrt{N}}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{\mathbf{D}(\mathbf{0, x}) \mathbf{D}(\mathbf{x, 0})}|\mathbf{v}>
+\end{align*}
+Where the last term is equal to $\mathbf{H}_N | \mathbf{v}>$. We note that multiplying the result with $\mathbf{X}^{\otimes m}$, we get similar result as in \eqref{ithColHn}.
+
+\end{document}
