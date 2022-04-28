@@ -7,7 +7,7 @@ The document matrices.tex contains matrix language research of binary chirps. Th
 Clone the reprository by
 
 ```bash
-% git clone git@github.com:elwuelwu/howard_scratches.git
+git clone git@github.com:elwuelwu/howard_scratches.git
 ```
 
 Create your own working branch, push the changes to remote. When the added feature is ready, rebase the branch from master and create a pull request.
