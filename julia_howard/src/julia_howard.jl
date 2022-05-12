@@ -13,8 +13,10 @@ smat = rand((0,1), mm, mm)
 smat = (smat + transpose(smat)) .% 2 + Diagonal(rand((0,1), mm))
 bvec = rand((0,1), mm)
 
-#display(smat)
+display(smat)
+println("")
 display(bvec)
+println("")
 
 chirp = zeros(ComplexF64, N)
 
@@ -40,20 +42,29 @@ function decoderow(vecin, row)
     shiftmultiplied = conj(vecin) .* (perms[row]*vecin)
     wht = fwht_natural(shiftmultiplied)
     avec = zeros(mm); avec[row] = 1
-    phasevec = [im^(avec'*digits(i-1, base=2, pad=mm)) for i in 1:N]
-    display(wht .* phasevec)
+    # Phase vector that rotates the signs to +- 1
+    phasevec = [im^(-avec'*reverse(digits(i-1, base=2, pad=mm))) for i in 1:N]
     abswht = map(abs, wht)
     ix = argmax(abswht)
     row = reverse(digits(ix-1, base=2, pad=mm))
-    return row
+    # Determine the bit on the b-vector
+    b_bit = (1 - sign((phasevec .* wht)[ix].re)) / 2
+    return row, b_bit
+end
+
+function procect(vecin, eigenvalue, rowind)
+    # The binary chirps are common +-1 eigenvectors for E(a,aS) for all a
+
 end
 
 sest = zeros(Int8, mm, mm)
+best = zeros(Int8, mm)
 for row in 1:mm
-    sest[row, :] = decoderow(chirp, row)
+    sest[row, :], best[row] = decoderow(chirp, row)
 end
 
-
+display(sest)
+display(best)
 
 
 end # module
