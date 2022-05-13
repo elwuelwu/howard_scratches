@@ -4,8 +4,10 @@ authors = ["Elias Heikkilä <heikkila.elias@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 Hadamard = "4a05ff16-5f95-55f4-bb53-bb3f467c689a"
 Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
