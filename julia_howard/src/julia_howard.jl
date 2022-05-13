@@ -18,15 +18,20 @@ println("")
 display(bvec)
 println("")
 
-chirp = zeros(ComplexF64, N)
-
-for i in 1:N
-    xvec = reverse(digits(i-1, base=2, pad=mm))
-    chirp[i] = im^(xvec'*smat*xvec + 2*bvec'*xvec)
+function generate_chirp(smat, bvec)
+    chirp = zeros(ComplexF64, N)
+    for i in 1:N
+        xvec = reverse(digits(i-1, base=2, pad=mm))
+        chirp[i] = im^(xvec'*smat*xvec + 2*bvec'*xvec)
+    end
+    return chirp
 end
+
+chirp = generate_chirp(smat, bvec)
 
 # Decoder
 
+Z = [1 0; 0 -1]
 X = [0 1; 1 0]
 I = [1 0; 0 1]
 seq = [X]
@@ -52,9 +57,21 @@ function decoderow(vecin, row)
     return row, b_bit
 end
 
-function procect(vecin, eigenvalue, rowind)
-    # The binary chirps are common +-1 eigenvectors for E(a,aS) for all a
+function construct_pauli(avec, bvec)
+    result = [1]
+    for i in 1:length(avec)
+        abit = avec[i]
+        bbit = bvec[i]
+        result = kron(result, im^(abit*bbit)*X^abit*Z^bbit)
+    end
+    return result
+end
 
+function project(vecin, eigenvalue, a, aS)
+    # The binary chirps are common +-1 eigenvectors for E(a,aS) for all a
+    # Thus an operator (1/2)*(Identity + eigenvalue*E(a,aS)) should keep the vector intact
+    pauli = construct_pauli(a,aS)
+    return (1/2)*(I(N) + eigenvalue*pauli)*vecin
 end
 
 sest = zeros(Int8, mm, mm)
@@ -65,6 +82,6 @@ end
 
 display(sest)
 display(best)
-
+display(construct_pauli([0,0,0],[1,1,1]))
 
 end # module
