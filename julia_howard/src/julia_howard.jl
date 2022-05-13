@@ -8,6 +8,7 @@ using Kronecker
 
 mm = 4
 N = 2^mm
+IdN = Diagonal(ones(N))
 
 smat = rand((0,1), mm, mm)
 smat = (smat + transpose(smat)) .% 2 + Diagonal(rand((0,1), mm))
@@ -71,7 +72,8 @@ function project(vecin, eigenvalue, a, aS)
     # The binary chirps are common +-1 eigenvectors for E(a,aS) for all a
     # Thus an operator (1/2)*(Identity + eigenvalue*E(a,aS)) should keep the vector intact
     pauli = construct_pauli(a,aS)
-    return (1/2)*(I(N) + eigenvalue*pauli)*vecin
+    projector = (1/2)*(IdN + eigenvalue*pauli)
+    return projector*vecin
 end
 
 sest = zeros(Int8, mm, mm)
