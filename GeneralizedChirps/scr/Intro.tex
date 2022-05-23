@@ -1,0 +1,82 @@
+%-------------------------------------------------------------------
+% Section:Objective
+%--------------------------------------------------------------------
+%\section*{Objective}
+%\label{Sec:Obj}
+
+%--------------------------------------------------------------------
+% Section:Introduction
+%----------------------------------------------------------------------
+\baselineskip = 30pt
+\section{Generalized Chirps Definition}
+\label{Sec:Int}
+\noindent Here we try to understand more in depth the generalized binary Chirps. According to the last discussion, we can generalize the binary Chirps as 
+\begin{equation}\label{GenSimChirp}
+	\mathbf{w} = \frac{1}{\sqrt{N}}\left[ i^{\mathbf{v \overline{S} v}^T+2\mathbf{b v}^T} \right], \quad \mathbf{\overline{S}}=\mathbf{S}+\frac{1}{2}\mathbf{\mathbf{\tilde{S}}}
+\end{equation}
+where $\mathbf{\tilde{S}}$ is a matrix with all zero diagonal elements. Question is that why at the definition of $\mathbf{\tilde{S}}$ anti-diagonal matrix has been considered?
+
+\noindent One possible answer can be explained in this way. If we consider $m=2$, and $\mathbf{v}=\left[v_1, v_2\right]^T$, $\mathbf{b}=\left[b_1, b_2\right]$ and $\overline{\mathbf{S}} = \begin{bmatrix}
+s_1 & s_{12} \\ s_{12} & s_2	
+\end{bmatrix}$. Then, we have $\mathbf{v \overline{S} v}^T+2\mathbf{b v}^T = 2s_{12}v_1v_2+\left(2b_1+s_1\right)v_1+\left(2b_2+s_2\right)v_2$. It is observed that if confine elements of $\mathbf{\overline{S}}$ to $0,1$ then term $2s_{12}v_1v_2$ will result in $0$ or $2$. However, if we let them to be selected from $\left\{0,1,\frac{1}{2}, \frac{3}{2}\right\}$ then this term completely generates the all $\mathbb{Z}_4$ elements.
+
+\noindent Another possible answer can be as follows. Consider the general very general case at calculating the $\mathbf{v R v}^T$, in which $\mathbf{R}\in \mathbb{Z}_{2^k}^{m\times m}$ and is a symmetric matrix. Note that $\mathbf{v R v}^T = \sum_{i}{\mathbf{R}_{ii} v_i}+2\sum_{i<j}{\mathbf{R}_{ij}v_i v_j} \text{  mod  } 2^k$. 
+
+
+\noindent Now if we consider that $\mathbf{R}_{ij}\in \left\{ 2^{k-1}+1,2^{k-1}+2,...,2^{k}\right\}$ then multiplying with 2 and considering the modulo operation, we can consider $\mathbf{R}'_{ij}=\mathbf{R}_{ij}-2^{k-1}$ and we will have $\mathbf{v R v}^T = \mathbf{v}\mathbf{R}'\mathbf{v}^T$. This means that we will not have the unique result for different values of $\mathbf{v}$ and this is not good for generating the codebook. Then if we consider symmetric $\mathbf{R}$ such that $\mathbf{R}_{ii}\in \mathbb{Z}_{2^k}, \mathbf{R}_{ij}\in \mathbb{Z}_{2^{k-1}}$, codewords will be unique.    
+
+
+Also, we can generalize the Chirps by considering $\overline{\mathbf{S}}=\sum_{i=1}^K{\frac{1}{2^{i-1}} \mathbf{S}_i}$.
+\section{Generalized Chirps level in Clifford Hierarchy}
+A good question is that, this codes belong to which level? First if we consider the binary Chirp, i.e., $\overline{\mathbf{S}}$ be a symmetric binary matrix, it is in the Clifford group since as we know in this case $\mathbf{w}\mathbf{E}\left(\left[ \mathbf{a, b}\right]\right)\mathbf{w} = \pm \mathbf{E}\left(\left[\mathbf{a,b}\right]\mathbf{F}\right)$ for a symplectic matrix $\mathbf{F}$. 
+
+\noindent But what about the generalized one? If we consider 
+\begin{equation}\label{DiagDefGen}
+	\tau_k\left(\mathbf{R}\right) = \text{diag}\left( \zeta_k^{ \mathbf{v R v}^T \text{  mod  } 2^k} \right)
+\end{equation}
+where $\zeta_k = e^{\frac{2\pi i}{2^k}}$, and $\mathbf{R} \in \mathbf{Z}_{2^k}$ is a symmetric matrix. We can prove that it is belong to level $k$ of the hierarchy as follow. 
+\begin{equation}\label{ConjRes}
+	\tau_k\left(\mathbf{R}\right)\mathbf{E}\left(\mathbf{a, b} \right)\tau_k^H\left(\mathbf{R}\right) = \zeta_k^{\mathbf{aRa}^T}\mathbf{E}\left(\mathbf{a, b}\right) \tau_{k-1}\left(\tilde{\mathbf{R}} \right)
+\end{equation}
+where $\tilde{\mathbf{R}} = \mathbf{D}_{\mathbf{aR}}-2 \mathbf{\mathbf{D}_{\overline{\mathbf{a}}}}\mathbf{R}\mathbf{D}_{\mathbf{a}} +\mathbf{D}_{\mathbf{aRD}_{\mathbf{a}}}$.
+\begin{proof}
+	Considering the definition of $\tau_k$, we have
+	\begin{align}
+		\tau_k  \mathbf{E}\left( \left[\mathbf{a, b}\right]\right) \tau_k^H& = i^{\mathbf{ab}^T} \sum_{\mathbf{v}\in \mathbf{F}_2^n}{\zeta_k^{\mathbf{v R v}^T} |\mathbf{v}><\mathbf{v}|}\sum_{\mathbf{u}\in \mathbf{F}_2^n}{(-1)^{\mathbf{u b}^T} |\mathbf{u+a}><\mathbf{u}|}\sum_{\mathbf{x}\in \mathbf{F}_2^n}{\zeta_k^{-\mathbf{x R x}^T} |\mathbf{x}><\mathbf{x}|} \nonumber \\
+		&= i^{\mathbf{ab}^T} \sum_{\mathbf{u}\in \mathbf{F}_2^n}{ \zeta_k^{\left(\mathbf{u\oplus a}\right)\mathbf{R}\left(\mathbf{u \oplus a}\right)^T-\mathbf{u R u}^T } (-1)^{\mathbf{u b}^T} |\mathbf{u+a}><\mathbf{u}|} \nonumber\\
+		&= i^{\mathbf{ab}^T} \sum_{\mathbf{u}\in \mathbf{F}_2^n}{ \zeta_k^{\left(\mathbf{u+ a-2u*a}\right)\mathbf{R}\left(\mathbf{u + a-2u*a}\right)^T-\mathbf{u R u}^T } (-1)^{\mathbf{u b}^T} |\mathbf{u+a}><\mathbf{u}|} \nonumber \\
+		&= i^{\mathbf{ab}^T } \sum_{\mathbf{u}\in \mathbf{F}_2^n}{ \zeta_k^{2\mathbf{aRu}^T+\mathbf{aRa}^T -4\left( \mathbf{u+a-u*a}\right)\mathbf{R}\left(\mathbf{u*a}\right)^T} (-1)^{\mathbf{u b}^T} |\mathbf{u+a}><\mathbf{u}|} \nonumber \\
+		&= i^{\mathbf{ab}^T }\zeta_k^{\mathbf{aRa}^T} \sum_{\mathbf{u}\in \mathbf{F}_2^n}{ \zeta_k^{2\mathbf{aRu}^T-4\left( \mathbf{u\mathbf{D}_{\overline{\mathbf{a}}}+a}\right)\mathbf{R}\mathbf{D}_{\mathbf{a}} \mathbf{u}^T } (-1)^{\mathbf{u b}^T} |\mathbf{u+a}><\mathbf{u}|} \nonumber \\
+		&= \zeta_k^{\mathbf{aRa}^T}\mathbf{E}\left(\mathbf{a, b}\right) \sum_{\mathbf{u}\in \mathbf{F}_2^n}{ \zeta_{k-1}^{\mathbf{u}\left(\mathbf{D}_{\mathbf{aR}}-2 \mathbf{\mathbf{D}_{\overline{\mathbf{a}}}}\mathbf{R}\mathbf{D}_{\mathbf{a}} +\mathbf{D}_{\mathbf{aRD}_{\mathbf{a}}}\right) \mathbf{u}^T } |\mathbf{u}><\mathbf{u}|} \nonumber \\
+		&= \zeta_k^{\mathbf{aRa}^T}\mathbf{E}\left(\mathbf{a, b}\right) \tau_{k-1}\left(\tilde{\mathbf{R}} \right)
+	\end{align}
+
+\end{proof}
+\noindent Using Eq. \eqref{ConjRes} and based on induction, we can prove that $\zeta_k(\mathbf{R})$ belongs to the $k$th level of the hierarchy as follow.
+
+
+\noindent First, we notice that for $k=1, 2$ considering the definition at Eq. \eqref{DiagDefGen}, we have element of Pauli and Clifford group, respectively and the are related to the first and 2nd level of the hierarchy. Now if we consider that it is belong to the $k$th hierarchy, then we need to prove that $\zeta_{k+1}$ belongs to the $k+1$th level. Considering Eq. \eqref{ConjRes}, we have $\zeta_{k+1} \mathbf{E}\left(\mathbf{a, b}\right)\zeta_{k+1} \zeta_{k+1}^H = c \mathbf{E}\left(\mathbf{a, b}\right)\zeta_{k+1} $ and it is already in the $k$th level, due to the induction and the fact that the Pauli elements do not affect the level of the hierarchy.
+
+
+\noindent It seems that the Eq. \eqref{GenSimChirp} have minor difference with the case when we consider $\mathbf{R}\in\mathbb{Z}_{2^k}^{m\times m}$, and here we investigate more in depth. Considering $\mathbf{w E}\left(\mathbf{a,b}\right) \mathbf{w}^H$, we have
+\begin{align}
+	\mathbf{w E}\left(\mathbf{a, b}\right) \mathbf{w}^H &=i^{\mathbf{a b}^T} \sum_{\mathbf{v}\in \mathbf{F}_2^n}{i^{\left(\mathbf{v}\oplus \mathbf{a}\right)\left(\mathbf{S+\frac{1}{2}\tilde{S}}\right)\left(\mathbf{v}\oplus \mathbf{a}\right)^T-\mathbf{v}\left(\mathbf{S+\frac{1}{2}\tilde{S}}\right)\mathbf{v}^T} (-1)^{\mathbf{v b}^T} |\mathbf{v+a}><\mathbf{v}|} \nonumber \\
+	& =i^{\mathbf{a b}^T} \sum_{\mathbf{v} \in \mathbf{F}_2^n}{i^{\left(\mathbf{v}+ \mathbf{a}-2\mathbf{v}\mathbf{D}_\mathbf{a}\right)\left(\mathbf{S+\frac{1}{2}\tilde{S}}\right)\left(\mathbf{v}+ \mathbf{a}-2\mathbf{v}\mathbf{D}_\mathbf{a}\right)^T-\mathbf{v}\left(\mathbf{S+\frac{1}{2}\tilde{S}}\right)\mathbf{v}^T} (-1)^{\mathbf{v b}^T} |\mathbf{v+a}><\mathbf{v}|} \nonumber \\
+	&= i^{\mathbf{a b}^T+\mathbf{a} \left(\mathbf{S+\frac{1}{2}\tilde{S}}\right)\mathbf{a}^T}\sum_{\mathbf{v}\in \mathbf{F}_2^n}{i^{2\mathbf{v} \left(\mathbf{S+\frac{1}{2}\tilde{S}}\right)\mathbf{a}^T-2\left(\mathbf{v+a}\right)\mathbf{\tilde{S}D}_\mathbf{a} \mathbf{v}^T+2\mathbf{v}\mathbf{D}_\mathbf{a} \mathbf{\tilde{S}}\mathbf{D}_\mathbf{a} \mathbf{v}^T  } (-1)^{\mathbf{v b}^T} |\mathbf{v+a}><\mathbf{v}|} \nonumber \\
+	&= i^{\mathbf{a b}^T+\mathbf{a} \left(\mathbf{S+\frac{1}{2}\tilde{S}}\right)\mathbf{a}^T}\sum_{\mathbf{v}\in \mathbf{F}_2^n}{i^{\mathbf{v} \mathbf{\tilde{S}} \mathbf{a}^T -2\mathbf{v}\mathbf{D}_{\mathbf{\overline{a}}}\mathbf{\tilde{S}D}_\mathbf{a} \mathbf{v}^T} (-1)^{\mathbf{v}\left(\mathbf{b+aS}+\mathbf{a\tilde{S}}\mathbf{D}_\mathbf{a}\right)^T} |\mathbf{v+a}><\mathbf{v}|} \nonumber \\
+	&= i^{\frac{1}{2}\mathbf{a} \mathbf{\tilde{S}}\mathbf{a}^T} \mathbf{E}\left(\mathbf{a, b+aS+a\tilde{S}\mathbf{D}_\mathbf{a}}\right) \sum_{\mathbf{v}\in \mathbf{F}_2^n}{i^{\mathbf{v} \mathbf{\tilde{S}} \mathbf{a}^T-2\mathbf{v}\mathbf{D}_{\mathbf{\overline{a}}}\mathbf{\tilde{S}D}_\mathbf{a} \mathbf{v}^T} |\mathbf{v}><\mathbf{v}|} \nonumber \\
+	& = i^{\frac{1}{2}\mathbf{a} \mathbf{\tilde{S}}\mathbf{a}^T} \mathbf{E}\left(\mathbf{a, b+aS+a\tilde{S}\mathbf{D}_\mathbf{a}}\right)\text{diag}\left(i^{\mathbf{v}\mathbf{S}'\mathbf{v}^T}\right)
+\end{align} 
+where $\mathbf{S}'=\mathbf{D}_\mathbf{a\tilde{S}}-2\mathbf{D}_{\overline{a}}\mathbf{\tilde{S}}\mathbf{D}_\mathbf{a}$ in which it is belong to the Clifford group (since its diagonal elements are non-zeros). Since the element of Pauli group has no effect on the level hierarchy, we conclude that $\mathbf{w}\in\mathcal{C}_3$.
+
+\noindent We can expand the binary Chirp codes by defining 
+\begin{equation}
+	\mathbf{w} = \text{diag}\left(i^{\sum_{i=0}^{K}{\frac{1}{2^i}\mathbf{S}_i} \text{ mod } 4}\right)=\text{diag}\left(\zeta_K^{\sum_{i=0}^{K}{2^{K-i}\mathbf{S}_i} \text{ mod }2^K }\right)
+\end{equation}
+where $\mathbf{S}_i$ is a binary symmetric matrix. Considering the fact that we can decompose any symmetric matrix $\mathbf{R}\in \mathbb{Z}_{2^K}$ can be decomposed in terms of binary matrices, by considering this definition, we will generate codes like in Eq. \eqref{DiagDefGen} in which is generalized version of codewords in Eq. \eqref{GenSimChirp}.
+
+
+
+
+
+
