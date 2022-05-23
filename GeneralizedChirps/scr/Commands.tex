@@ -1,0 +1,137 @@
+\usepackage[colorlinks=true,pdfstartview=FitV,linkcolor=black,citecolor=black,urlcolor=blue,plainpages=false]{hyperref}
+%\newcommand{\href}[2]{#2}
+%\usepackage[numbers,sort&compress]{natbib}
+%\usepackage{hypernat}
+\usepackage{pifont}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{t1enc}
+\usepackage{times}
+\usepackage{epsf,epsfig,subfigure}
+%\usepackage{wrapfig}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{array}
+\usepackage{algorithm,algpseudocode}
+%\usepackage{lipsum}
+%\usepackage{colortbl}q
+\usepackage{color}
+%\usepackage{floatrow}
+%\usepackage{booktabs}
+%\usepackage{paralist}
+\usepackage{fancyref}
+%\usepackage{bm}
+%\usepackage{multirow}
+%\usepackage{amssymb}
+\usepackage{subfigure}
+%\usepackage{cases}
+%\usepackage{empheq}
+%\usepackage{cite}
+%\usepackage[nottoc,numbib]{tocbibind}
+%\usepackage{setspace}
+%\usepackage{hyperref}
+%\newcommand{\href}[2]{{\tt #1}}
+\usepackage{eurosym}
+\usepackage{relsize}
+
+%\usepackage{relsize}
+%\renewcommand\RSpercentTolerance{0}
+\newcommand{\tran}{^{\mbox{\scriptsize T}}}
+%\DeclareMathOperator{\rank}{rank}
+%\DeclareMathOperator{\tr}{tr}
+%\DeclareMathOperator{\diag}{diag}
+\renewcommand{\L}{\mathsf{L}}
+%\DeclareMathOperator*{\argmin}{arg\,min}
+%\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\maxi}{max}
+\DeclareMathOperator*{\mini}{min}
+\DeclareMathOperator*{\find}{find}
+%\DeclareMathOperator*{\card}{card}
+%\DeclareMathOperator*{\rank}{rank}
+%\DeclareMathOperator*{\st}{subject~to}
+\DeclareMathOperator*{\st}{s.t.}
+\DeclareMathOperator*{\red}{red}
+%\renewcommand{\baselinestretch}{0.9}
+%\renewcommand{\baselineskip}{0.4ex}
+%\renewcommand{\thesection}{\arabic{section}.}
+%\renewcommand{\thesubsection}{\arabic{section}\Alph{subsection}}
+
+% space-saving techniques
+\usepackage{microtype} % makes the text more dense but also nicer looking
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*, itemsep=.1em, topsep=0.5em} % makes itemization a bit more compact (no indents)
+\usepackage[font={small,it}]{caption} % makes smaller and italics captions!
+%\newfloatcommand{capbtabbox}{table}[][\FBwidth] % needed to have tables on the side of figures
+
+% USEFUL COMMENT COMMANDS
+\newcommand{\cs}[1]{{\textcolor{red}{\bf \em [cs: #1]}}}
+\newcommand{\HEREc}{\begin{center}\bf \textcolor{red}{---- chris' edits end here ----} \end{center}}
+
+% TWEAK LAYOUT (DO NOT CHANGE)
+\setcounter{tocdepth}{2}
+\def\tablestrut{\vrule height1.25em depth0pt width0pt}
+\def\topfraction{.9}
+\def\bottomfraction{.9}
+\def\textfraction{.1}
+
+%\textheight 25cm
+%\textheight 9in
+%\textwidth 7in
+%\oddsidemargin 0in
+%\evensidemargin 0in
+%\topmargin -1cm
+%\topmargin -.5in %\advance \topmargin-\baselineskip \headsep .5in
+\marginparwidth .7in \marginparsep .15in
+
+%\setlength{\textwidth}{178 mm}
+%\setlength{\evensidemargin}{-8 mm}
+\setlength{\textwidth}{165 mm}
+\setlength{\evensidemargin}{-3 mm}
+
+\setlength{\oddsidemargin}{\evensidemargin}
+%\setlength{\textheight}{248 mm}
+\setlength{\textheight}{245 mm}
+\setlength{\topmargin}{-20 mm}
+%\setlength{\headheight}{12pt}
+%\setlength{\footskip}{5mm}
+
+
+\floatsep 8pt plus 2pt minus 2pt
+\textfloatsep 8pt plus 2pt minus 2pt
+
+% change spacings before and after sections etc.
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+	{-2ex \@plus -1ex \@minus -.2ex}%
+	{1.5ex \@plus.2ex}%
+	{\normalfont\large\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+	{-2ex\@plus -1ex \@minus -.2ex}%
+	{1ex \@plus .2ex}%
+	{\normalfont\normalsize\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+	{1.5ex\@plus 1ex \@minus .2ex}%
+	{.5ex \@plus .2ex}%
+	{\normalfont\normalsize\bfseries}}
+\setcounter{secnumdepth}{3}
+\renewcommand{\paragraph}{%
+	\@startsection{paragraph}{4}%
+	{\z@}{1.2ex \@plus 1ex \@minus .2ex}{-1em}%
+	{\normalfont\normalsize\bfseries}}
+\makeatother
+
+\let\OLDthebibliography\thebibliography
+\renewcommand\thebibliography[1]{
+	\OLDthebibliography{#1}
+	\setlength{\parskip}{0pt}
+	\setlength{\itemsep}{0pt plus 0.3ex}
+}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
+
+\newtcbtheorem[number within=section]{mytheo}{My Theorem}%
+{colback=green!5,colframe=green!35!black,fonttitle=\bfseries}{th}
+
+\newtcbtheorem[number within=section]{mytheo2}{Postulate}{colback=green!5,colframe=green!35!black,fonttitle=\bfseries}{th}
