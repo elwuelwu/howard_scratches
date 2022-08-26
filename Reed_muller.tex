@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+
+\usepackage{xcolor}
+\usepackage{pifont}
+
+\title{Reed-Muller codes}
+\setlength{\parindent}{0em}
+\begin{document}
+\maketitle
+\subsection*{Definition}
+
+Reed-Muller codes can be defined as binary evaluations mod 2 of polynomials with given maximum order $r$ and given amount of variables $m$.
+\begin{align*}
+RM(r,m) = \{\text{eval}(f) | \text{deg}(f) \leq r \}
+\end{align*}
+
+For example, let's have $m=3, r=2$. Let's denote the variables as $x_1, x_2, x_3$.
+Now all the polynomials of second order will be generated as sums of the following monomials:
+$1, x_1, x_2, x_3, x_1x_2, x_1x_3, x_2x_3$, where the $x_1x_2, x_1x_3, x_2x_3$ are the second order monomials. A single variable squared gives same evaluation as the variable itself, thus we can conclude $x_i^2 = x_i$
+Now one natural generator matrix of $RM(2,3)$ would be the evaluations of the monomials.
+
+\begin{table}[h]
+	\begin{tabular}{lllllllll}
+		$x_1$     & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+		$x_2$     & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+		$x_3$     & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 \\
+		$x_1x_2$ & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 \\
+		$x_1x_3$ & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 \\
+		$x_2x_3$ & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1
+	\end{tabular}
+\end{table}
+
+So the Reed-Muller codewords are simply sums of these evaluations. 
+
+\subsection*{Connection to BCs}
+
+The connection to BCs is quite simple: If we think of $\mathbf{xSx}^T + 2\mathbf{bx}^T$, this has a natural interpretation as a quadratic polynomial, where the variables are the coordinates of $\mathbf{x}$-vector. If we consider the case $m=3$ the $\mathbf{x}=(x_1,x_2,x_3)$, this coincides with the definition of $RM(2,3)$ above. Now the only difference is that we are taking the binary evaluation of the polynomial mod 4, since the chirp is defined as a power of imaginary unit:
+
+\begin{align*}
+	i^{\mathbf{xSx}^T+2\mathbf{bx}^T}
+\end{align*}
+
+So strictly speaking, we are not exponentiating a RM-codeword, but something very close to it: Think of quadratic polynomial and evaluate it with binary vectors and instead of taking the result modulo 2, interpret it in modulo 2.
+\end{document}
