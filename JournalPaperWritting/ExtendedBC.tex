@@ -1,0 +1,644 @@
+\documentclass[lettersize,journal,onecolumn]{IEEEtran}
+\usepackage{amsmath,amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%\usepackage{algorithmic}
+\usepackage{array}
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage{textcomp}
+\usepackage{stfloats}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{algorithm,algpseudocode}
+%\usepackage{algorithm}
+%\hyphenation{op-tical net-works semi-conduc-tor IEEE-Xplore}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\usepackage{balance}
+
+\usepackage{xcolor}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+%\renewcommand{\algorithmicinitialize}{\textbf{Initialize:}}
+
+
+\begin{document}
+\title{Extended Binary Chirps: Hierarchy Level Analysis and Low Complex Decoder}
+\author{ Aalto university
+\thanks{Part of this work has been published in Wireless Communications and Networking Conference (WCNC) in \cite{Pllaha22LCGbc}.} }
+
+\markboth{Journal of \LaTeX\ Class Files,~Vol.~18, No.~9, September~2020}%
+{How to Use the IEEEtran \LaTeX \ Templates}
+
+\maketitle
+\baselineskip = 20pt
+\begin{abstract}
+Here is the abstract!!
+\end{abstract}
+
+\begin{IEEEkeywords}
+Binary Chirp, Extended Binary Chirps, Clifford Hierarchy level, Howard algorithm 
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+\IEEEPARstart{T}{his} the introduction part: I think it is better to start by IoT and then describe BC, and then describe the Howard decoder, then extended BC papers and Finally explain that what we will do in this paper. 
+
+Also about the paper organization: It is better to start with preliminaries, then talk about Howard algorithm and how it works and extended BCs and finally numerical results. 
+
+In preliminaries part, first introduce Pauli group, then the Hierarchy levels and finally definition of BC.
+
+In Howard algorithm part, first describe the Howard algorithm and then show that how it really works. Then describe why we need to consider $|e_i+e_{i+1}>$?
+
+In extended BC, first describe 
+
+\section{Preliminaries and System Model}
+\noindent In this section, we provide a mathematical framework for our analysis. To do so, first, we discuss the Heisenberg-Weyl group
+and also the Clifford Hierarchy levels, then, define the binary chirps.
+\subsection{Heisenberg-Weyl Group and Clifford Hierarchy}
+For a given $m \in \mathbb{N}$, consider $|0 \rangle \triangleq \begin{bmatrix}
+	1 \\ 0 \end{bmatrix}, |1 \rangle \triangleq \begin{bmatrix}
+	0 \\ 1 \end{bmatrix}$ as the computational basis of $\mathcal{C}^2$. Considering $\mathbf{V}=\left(v_1, v_2, ..., v_m  \right)$, where $v_i \in\left\{0,1 \right\}, \forall i=1,...,m$, then $|\mathbf{v}\rangle = |v_1\rangle \otimes |v_2\rangle\otimes ... \otimes |v_m \rangle$ is the standard basis of $\mathbb{C}^N$, where $N = 2^m$, and $\mathbf{A}\otimes \mathbf{B}$ denotes the Kronecker (Tensor) product between $\mathbf{A}$ and $\mathbf{B}$. 
+
+
+ The $2 \times 2$ Pauli matrices are defined as follows
+ \begin{equation}
+ 	\mathbf{I} \triangleq \begin{bmatrix} 1 && 0 \\ 0 && 1 \end{bmatrix}, \mathbf{X} \triangleq \begin{bmatrix} 0 && 1 \\ 1 && 0 \end{bmatrix}, \mathbf{Z} \triangleq \begin{bmatrix} 1 && 0 \\ 0 && -1 \end{bmatrix}, \mathbf{Y} \triangleq i\mathbf{X}\mathbf{Z} = \begin{bmatrix} 0 && -i \\ i && 0 \end{bmatrix}
+ \end{equation}
+ 
+   It can be seen that the Pauli matrices are Hermitian.
+Define a $m$-fold Kronecker product or $N \times N$ $\mathbf{D}$-matrix with binary vectors $\mathbf{a} = (a_1, ..., a_m), \mathbf{b} = (b_1,..., b_m) \in \mathbb{F}_2^m$ as
+\begin{equation}\label{DmatrixDef}
+	\mathbf{D}\left(\mathbf{a}, \mathbf{b}\right) \triangleq \mathbf{X}^{a_1}\mathbf{Z}^{b_1} \otimes \cdots \otimes \mathbf{X}^{a_m}\mathbf{Z}^{b_m}.
+\end{equation}
+The Heisenberg-Weyl group, $\mathcal{HW}_N$, is defined as $\mathcal{HW}_N \triangleq \left\{i^k \mathbf{D}\left(\mathbf{a}, \mathbf{b}\right) \; | \; \mathbf{a, b} \in \mathbb{F}_2^m, \; k=0,1,2,3  \right\}$, in which its order is $4N^2$. It can be seen from Eq. \eqref{DmatrixDef} that
+\begin{equation}\label{DRelations}
+	\mathbf{D}\left(\mathbf{a, b}\right) \mathbf{D}\left(\mathbf{c, d}\right) = \left(-1\right)^{\mathbf{b c}^T}\mathbf{D}\left(\mathbf{a+c, b+d}\right) = \left(-1\right)^{ \langle\mathbf{a,b} | \mathbf{c, d}\rangle}\mathbf{D}\left(\mathbf{c, d}\right) \mathbf{D}\left(\mathbf{a, b}\right),
+\end{equation}
+where $\langle \mathbf{a,b} | \mathbf{c, d} \rangle \triangleq \mathbf{b c}^T-\mathbf{a d}^T$ is the symplectic inner product on $\mathbb{F}_2^{2m}$. It can be seen from Eq. \eqref{DRelations} that $\mathbf{D}\left(\mathbf{a, b}\right)$ and $\mathbf{D}\left(\mathbf{a, b}\right)$ commute iff $\langle \mathbf{a,b} | \mathbf{c, d}\rangle = 0$. According to the definition, we can rewrite Eq. \eqref{DmatrixDef} as 
+\begin{equation}\label{DketDef}
+	\mathbf{D}\left(\mathbf{a, b}\right) = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{\left(-1\right)^{\mathbf{b v}^T} |\mathbf{v+a}\rangle \langle\mathbf{v}|}.
+\end{equation}
+Finally, the Hermitian $N \times N$ Pauli matrices are of the form $\mathbf{E}(\mathbf{a}, \mathbf{b}) = i^{\mathbf{a}\mathbf{b}^T}\mathbf{D}(\mathbf{a}, \mathbf{b})$, where the exponent is taken in modulo $4$. It is clearly Hermitian, since according to the definition $\mathbf{D}\left(\mathbf{a, b}\right)^T = \left(-1\right)^{\mathbf{a b}^T}\mathbf{D}\left(\mathbf{a, b}\right)$.
+
+One of the fundamental concepts for universal quantum computation is the Clifford Hierarchy of unitary operators \cite{GottesmanTelport99, Rengaswamy2019UnifyingTC}. The first level of the Clifford Hierarchy is the Pauli group; $\mathcal{C}_1 = \mathcal{P}$ and higher levels are defined recursively, especially the level $n$ is defined as 
+\begin{equation}
+	\mathcal{C}_n = \left\{ \mathbf{G} \in \mathbb{U}_N \: \bigg| \: \mathbf{G} \mathbf{P} \mathbf{G}^H \subseteq \mathcal{C}_{n-1}  \right\},
+\end{equation}
+where $\mathbb{U}_N$ denotes the group of unitary $N\times N$ matrices. The second level, $\mathcal{C}_2$, describes the Clifford group and denoted by $\text{Cliff}_N \triangleq \left\{ g\in \mathbb{U}_N \; | \; \mathbf{g}\mathbf{E}\left(\mathbf{a,b}\right) \mathbf{g}^H = \mathbf{E}\left(\mathbf{a',b'}\right) \right\}$. That means $\text{Cliff}_N$ maps an element of Pauli to another element, and also, it can be seen that the $\text{Cliff}_N$ is the normalizer of $\mathcal{HW}_N$. It is well-known fact that the automorphism induced by $\mathbf{g}\in \text{Cliff}_N$ satisfies 
+\begin{equation}
+	\mathbf{g E}\left(\mathbf{a,b}\right)\mathbf{g}^H = \pm \mathbf{E}\left(\left[\mathbf{a, b}\right] \mathbf{F}_g \right),
+\end{equation} 
+where $\mathbf{F}_g$ is a symplectic matrix, i.e., $\mathbf{F}_g \mathbf{\Omega} \mathbf{F}_g^T = \mathbf{\Omega}$, where $\mathbf{\Omega} = \begin{bmatrix}
+	\mathbf{0}_m & \mathbf{I}_m \\
+	\mathbf{I}_m & \mathbf{0}_m
+\end{bmatrix}$, in which $\mathbf{0}_m$ and $\mathbf{I}_m$ are all zero and identity $m \times m$ matrices, respectively.
+\subsection{Binary Chirps}
+The unit norm vectors indexed by $\mathbf{v}$ as follows
+\begin{equation}\label{BCmainDef}
+	\mathbf{w}_{\mathbf{S,b}} = \dfrac{1}{\sqrt{N}}\left[i^{\mathbf{v^TSv + 2b^Tv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m},
+\end{equation}
+where $\mathbf{S}\in \text{Sym}(m;2)$ is an $m\times m $ binary symmetric matrix, and $\mathbf{b}\in \mathbb{F}_2^m$ is a binary vector, defines the  binary chirps in $\mathcal{C}^N$. A binary chirp codeword consists of a \textit{mask sequence} $\left[i^{\mathbf{v^TSv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m}$ and a \textit{Hadamard sequence} $\left[(-1)^{\mathbf{b^Tv}}\right]_{\mathbf{v} \in \mathbb{F}_2^m}$. Thus collection of BCs is an exponentiated second order Reed-Muller code, and they have many desirable algebraic and geometric features \cite{Pllaha22LCGbc, Olav19CodeComplex}.
+ 
+  \noindent Note that $\mathbf{H}_2 \triangleq \dfrac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix}$ denotes the $2 \times 2$ Walsh-Hadamard matrix, and $\mathbf{H}_N \triangleq \mathbf{H}^{\otimes m}_2$ is an $N\times N$ Walsh-Hadamard matrix. According to the definition, $\mathbf{H}_2 = \frac{1}{\sqrt{2}}(\mathbf{I} - \mathbf{XZ})$, and then using the distributivity of the tensor product, we have
+\begin{equation}\label{HadamardNonNat}
+	\mathbf{H}_N = \bigotimes_{1=1}^m \mathbf{H}_2 =	\bigotimes_{i = 1}^m \frac{1}{\sqrt{2}} (\mathbf{I} - \mathbf{XZ}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a},\mathbf{a}) = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0},\mathbf{a})\mathbf{D}(\mathbf{a},\mathbf{0}).
+\end{equation}
+%We can also continue calculations to give more equivalent forms
+%\begin{align*}
+%	\frac{1}{\sqrt{N}}	\sum_{\mathbf{a} \in \mathbb{F}_2^m} (-1)^{w(\mathbf{a})}\mathbf{D}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}_2^m} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a}, \mathbf{a}) = \frac{1}{\sqrt{N}} \prod_{i = 1}^m (\mathbf{I} + i\mathbf{E}(\mathbf{e}_i, \mathbf{e}_i)) = \frac{1}{\sqrt{N}} \prod_{i = 1}^m (\mathbf{I} - \mathbf{D}(\mathbf{e}_i, \mathbf{e}_i))
+%\end{align*}
+This is the version of the Walsh-Hadamard matrix where its diagonal elements are all one. Also, We have the "naturally" ordered Walsh-Hadamard matrix defined as $\mathbf{H}_2^{nat} = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}^{\otimes m}$ and $\mathbf{H}_N^{nat} = {\mathbf{H}_2^{nat}}^{\otimes m}$. We can switch between the different versions by multiplying $\mathbf{H}_N^{nat} = \mathbf{H}_N\mathbf{X}^{\otimes m}$ i.e., reversing the order of the columns.
+There is a neat sum form for the naturally ordered Walsh-Hadamard:
+\begin{align*}
+	\mathbf{H}^{\text{nat}}_N = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}_2^m} \mathbf{D}(\mathbf{0}, \mathbf{a}) \mathbf{D}(\overline{\mathbf{a}}, \mathbf{0})
+\end{align*}
+where $\overline{\mathbf{a}}$ is a bitwise complement of $\mathbf{a}$. Also, we can rewrite $\mathbf{H}_N^{\text{nat}}$ as follows
+\begin{equation}\label{Hrefomed}
+	\mathbf{H}_N^{\text{nat}} = \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} \mathbf{v}^T } |\mathbf{u}\rangle \langle\mathbf{v}|}
+\end{equation}
+ In the sequel, we denote the "all ones diagonal" version of the $N \times N$ Walsh-Hadamard matrix simply by $\mathbf{H}$. 
+Walsh-Hadamard matrix belongs to the Clifford group as it permutes the Pauli group and it corresponds to the symplectic matrix $\mathbf{F} = \begin{bmatrix}
+	\mathbf{0} & \mathbf{I} \\
+	\mathbf{I} & \mathbf{0}
+\end{bmatrix}$. This means that if we conjugate $\mathbf{E}(\mathbf{a},\mathbf{b})$ with the Walsh-Hadamard matrix $\mathbf{H}$, the places of $\mathbf{a}$ and $\mathbf{b}$ will be swapped: $\mathbf{H}^H\mathbf{E}(\mathbf{a},\mathbf{b})\mathbf{H} = \pm \mathbf{E}(\left[\mathbf{a},\mathbf{b}\right]\mathbf{F}) = \pm \mathbf{E}(\mathbf{b},\mathbf{a})$. 
+
+Consider the maximal commuting subgroup of Pauli group by $\mathcal{X}$-group: $\mathcal{X} = \{\mathbf{E}(\mathbf{a},\mathbf{0}) \mid \mathbf{a} \in \mathbb{F}^m_2 \}$, and $\mathcal{Z}$-group:  $\mathcal{Z} = \{\mathbf{E}(\mathbf{0},\mathbf{b}) \mid \mathbf{b} \in \mathbb{F}^m_2 \}$. It can be seen that the Walsh-Hadamard matrix gives an isomorphism between the $\mathcal{X}$ and $\mathcal{Z}$ groups, since $\mathbf{H}^H\mathcal{X}\mathbf{H} = \mathcal{Z}$.
+%Now it is clear that the Walsh-Hadamard matrix gives an isomorphism between the $\mathcal{X}$-group: $\mathcal{X} = \{\mathbf{E}(\mathbf{a},\mathbf{0}) \mid \mathbf{a} \in \mathbb{F}^m_2 \}$ and $\mathcal{Z}$-group: $\mathcal{Z} = \{\mathbf{E}(\mathbf{0},\mathbf{b}) \mid \mathbf{b} \in \mathbb{F}^m_2 \}$ since $\mathbf{H}^H\mathcal{X}\mathbf{H} = \mathcal{Z}$, where the $\mathcal{X}$-group is a maximal commuting subgroup of the Pauli group.
+\section{System Model}
+In this section, we first explain the system model considered in the paper, then discuss the Howard algorithm introduced in \cite{HowardAlg08}, and finally, show how the Howard algorithm is working.
+\subsection{Received Signal}
+We consider the transmission of the BCs over the additive white Gaussian noise channel for our analysis, and hence the received signal can be represented as follows
+\begin{equation}
+	\mathbf{y}=\mathbf{w}_{\mathbf{S, b}} + \mathbf{n},
+\end{equation}
+where $\mathbf{y}\in \mathbb{C}^N$ is the received signal, $\mathbf{n}\sim \mathcal{CN}\left(\mathbf{0}, \mathbf{I}_{N}\right)$ denotes the noise of the system, and $\mathbf{w}_{\mathbf{S,b}}$ is the BC given by Eq. \eqref{BCmainDef}.
+
+\noindent It can be seen that the BC codebooks represent the complex Grassmannian lines living in $\mathcal{G}_{\mathbb{C}}\left(N,1\right)$. The chordal distance is considered as a metric in $\mathcal{G}_{\mathbb{C}}\left(N,1\right)$, which is defined as 
+\begin{equation}
+	d_c\left(\mathbf{w}_1, \mathbf{w}_2\right) = \sqrt{1-\left\lvert \mathbf{w}_1^H \mathbf{w}_2 \right\rvert},
+\end{equation}
+and the minimum chordal distance is defined by
+\begin{equation}
+	d_c\left(\mathcal{C}\right) = \underset{\substack{\mathbf{w}_1, \mathbf{w}_2 \in \mathcal{C} \\ \mathbf{w}_1 \neq \mathbf{w}_2  }}{\min}{d_c\left(\mathbf{w}_1, \mathbf{w}_2\right)},
+\end{equation}
+as a measure of the quality of the Grassmannian codebook. For the BC codewords, the minimum chordal distance has been found as
+\begin{equation}
+	d_c\left(\mathbf{w}_1, \mathbf{w}_2\right) \ge \sqrt{1-2^{-\text{R}/2}},
+\end{equation}
+where $\text{R} = \text{Rank}\left(\mathbf{S}_1 - \mathbf{S}_2\right)$, in which results in $d_c(\mathcal{C})=\frac{1}{\sqrt{2}}$.
+\subsection{Howard Algorithm}
+A simple low-complex algorithm for decoding the BC has been proposed in \cite{HowardAlg08} which contains the following steps:
+\begin{enumerate}
+	\item For recovering the $i$th row of $\mathbf{S}$, construct a shifted version of the received signal as $\mathbf{y}\left(\mathbf{a+e}_i\right)$.
+	\item Compute the element-wise product of conjugate of the received signal with the shifted version: $\overline{\mathbf{y}\left(\mathbf{a}\right)} \odot \mathbf{y}\left(\mathbf{a+e}_i\right)$, where $\odot$ denotes the Hadamard or element-wise product operation.
+	\item Finally, calculate $\mathbf{H} \left(\overline{\mathbf{y}\left(\mathbf{a}\right)}\odot\mathbf{y}\left(\mathbf{a+e}_i\right)\right)$, and using the location of the maximum absolute value of this term, the $i$th row can be identified. After finding all rows, the estimated $\mathbf{S}$ is used to identify the vector $\mathbf{b}$.
+\end{enumerate}
+In the sequel, we try to make it clear why this algorithm works. To do so, we consider two different coordinate-free representations for the BC given in Eq. \eqref{BCmainDef} as follows
+\begin{align}
+	\mathbf{W_1} & = \mathbf{g H} \label{firstCoFreeBC} \\
+	\mathbf{W_2} & = \mathbf{g H g}^H \label{SecondCoFreeBC},
+\end{align}
+  where $\mathbf{g} = \text{diag}\left(i^{\mathbf{a S a}^T}\right), \mathbf{a}\in \mathbb{F}_2^m$. Before investigating the Howard algorithm, it is instructive to consider the two following lemmas. 
+ \begin{lemma}\label{LemabEqual}
+ 	Considering the Pauli matrices, if $\mathbf{a}\neq \mathbf{b}$ then $\implies \mathbf{D}(\mathbf{a}, \mathbf{c}) \odot \mathbf{D}(\mathbf{b}, \mathbf{d}) = \mathbf{0}$.
+ \end{lemma}
+ \begin{proof}
+ 	Note that 
+ 	\begin{equation}\label{KronDotFeature}
+ 		\left(\mathbf{A} \otimes \mathbf{B} \right) \odot \left(\mathbf{C} \otimes  \mathbf{D} \right) = \left(\mathbf{A} \odot \mathbf{C} \right) \otimes \left(\mathbf{B} \odot \mathbf{D}\right),
+ 	\end{equation}
+ 	then, we have
+ 	\begin{equation}
+ 		\mathbf{D}(\mathbf{a}, \mathbf{c}) \odot \mathbf{D}(\mathbf{b}, \mathbf{d}) = \left(\mathbf{x}^{a_1} \mathbf{z}^{c_1}   \odot \mathbf{x}^{b_1} \mathbf{z}^{d_1}  \right) \otimes ...\otimes \left(\mathbf{x}^{a_m} \mathbf{z}^{c_m}  \odot \mathbf{x}^{b_m} \mathbf{z}^{d_m}  \right).
+ 	\end{equation}
+ As can be seen from \eqref{DketDef}, the $\mathbf{x}$ Pauli matrix changes the position of diagonal to anti-diagonal elements. As a result, if $\mathbf{a}\neq \mathbf{b}$ then $\mathbf{x}^{a_i} \mathbf{z}^{c_i}$ will be mapped to different anti-diagonal elements than $\mathbf{x}^{b_i} \mathbf{z}^{d_i}$, and  the result of the element-wise product will be a zero matrix.
+ \end{proof}
+\begin{lemma}\label{LemaDabcDac}
+	Considering the Pauli matrices, we have
+	\begin{equation}
+		\mathbf{D}\left(\mathbf{a,b+c}\right) \odot \mathbf{D}\left(\mathbf{a,b}\right) = \mathbf{D}\left(\mathbf{a,c}\right).
+	\end{equation}
+\end{lemma}
+\begin{proof}
+Consider Eq. \eqref{DketDef}, we have
+\begin{align}
+	\mathbf{D}\left(\mathbf{a,b+c}\right) \mathbf{D}\left(\mathbf{a,b}\right)& = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{\left(-1\right)^{\left(\mathbf{b+c}\right)\mathbf{v}^T} |\mathbf{v+a}\rangle \langle\mathbf{v}|}\odot \sum_{\mathbf{u} \in \mathbb{F}_2^m}{\left(-1\right)^{\mathbf{b}\mathbf{u}^T} |\mathbf{u+a}\rangle \langle\mathbf{u}|} \nonumber \\
+	& \stackrel{(a)}{=}\sum_{\mathbf{u} \in \mathbb{F}_2^m}{\left(-1\right)^{\mathbf{b}\mathbf{u}^T} |\mathbf{u+a}\rangle \langle\mathbf{u}|} = \mathbf{D}\left(\mathbf{a,c}\right)  
+\end{align}
+where $(a)$ comes from the fact that $|\mathbf{v+a}\rangle \langle\mathbf{v}| \odot |\mathbf{u+a}\rangle \langle\mathbf{u}|$ is non-zero if $\mathbf{u=v}$, since $\mathbf{u}$ and $\mathbf{v}$ are the standard basis vectors in $\mathbb{C}^N$.
+\end{proof}
+%then we need to consider terms like $\mathbf{x}^{a_1}\mathbf{z}^{b_1+c_1} \odot \mathbf{x}^{a_1}\mathbf{z}^{b_1}$. It can be seen that since,  
+%How we can prove that? Here is some insight. By considering the definition, it is suffice to consider first element for example:
+%\begin{equation*}
+%	\mathbf{x}^{a_1}\mathbf{z}^{b_1+c_1} \odot \mathbf{x}^{a_1}\mathbf{z}^{b_1}
+%\end{equation*}
+%we have 8 different cases here, by checking each of them and considering the fact that $\mathbf{x}\mathbf{z}\odot \mathbf{x}\mathbf{z} = \mathbf{x}$ and $\mathbf{x}\odot \mathbf{x}\mathbf{z} = \mathbf{x}\mathbf{z}$, we can conclude the result.
+ \noindent Also, note that 
+ \begin{equation*}
+ 	E(\mathbf{a,b\oplus c}) \odot E(\mathbf{a,b}) = i^{\mathbf{a}(\mathbf{b\oplus c})^T}i^{\mathbf{a}\mathbf{b}^T}D(\mathbf{a,b+c}) \odot D(\mathbf{a,b}) = (-1)^{(\mathbf{b+b}*\mathbf{c})\mathbf{a}^T} E(\mathbf{a,c}),
+ \end{equation*}
+ where $*$ denotes the element-wise product, and the final result comes from the fact that $\mathbf{a}\oplus \mathbf{b} = \mathbf{a+b}-2\mathbf{a}*\mathbf{b}$. Hence it is better to use $\mathbf{D}(.,.)$ instead of its counterpart $\mathbf{E}(.,.)$.
+  
+   \noindent The following theorem clarifies how the Howard algorithm works.
+  \begin{theorem}\label{TheoHowardHowWork}
+  	Considering the coordinate-free representation of the BCs described in Eq. \eqref{firstCoFreeBC} and \eqref{SecondCoFreeBC}, the output of the Howard algorithm for the $j$th shift can be written as
+  	 \begin{equation}
+  	 	\mathbf{H}\left(\overline{\mathbf{W}_i\left(\mathbf{a}\right)}\odot \mathbf{W}_i\left(\mathbf{a+e}_j\right)\right)  = \frac{-i^{\mathbf{e}_j \mathbf{S e}_j^T}}{\sqrt{N}} \sum_{ \mathbf{x} \in \mathbf{F}_2^m}{(-1)^{\mathbf{e}_j \mathbf{S} \mathbf{x}^T} |\mathbf{S}_j\rangle \langle \mathbf{x}| }\label{FinHcalRes}
+  	 \end{equation}
+   for $i\in \left\{1,2\right\}$, where $\mathbf{S}_j$ denotes the $j$th row of $\mathbf{S}$.
+  \end{theorem}
+\begin{proof}
+	Starting with the first case, i.e., $\mathbf{W}_1=\mathbf{g H}$, using the definition we have
+	\begin{align}
+		\mathbf{W}_1 &= \mathbf{g}\mathbf{H} = \frac{1}{\sqrt{N}}\mathbf{g}\left(\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{a},\mathbf{a})\right) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a}) \label{WfirstDef} \\
+		\overline{\mathbf{W}_1} &= \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{-w(\mathbf{a})}(-1)^{w(\mathbf{a})}\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a}) = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a}), \label{WbarFirstDef}
+	\end{align}
+where $\overline{\mathbf{W}}_1$ denotes the elementwise complex conjugate of the matrix $\mathbf{W}_1$. Considering Eq. \eqref{WfirstDef}, we have
+\begin{equation}\label{EjW1}
+	\mathbf{E}(\mathbf{e}_j, \mathbf{0})\mathbf{W}_1 = \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a}),
+\end{equation}
+then for calculating  $\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a})$, we can perform as
+\begin{align*}
+	\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a})& = 	i^{w(\mathbf{a})}  \sum_{\mathbf{v} \in \mathbb{F}_2^m}{ |\mathbf{v}+\mathbf{e}_j \rangle  \langle \mathbf{v}|}  \sum_{\mathbf{u} \in \mathbb{F}_2^m}{i^{\mathbf{u S}\mathbf{u}^T} |\mathbf{u} \rangle  \langle \mathbf{u}|}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{ (-1)^{\mathbf{x}\mathbf{a}^T}|\mathbf{x+a}\rangle  \langle\mathbf{x}|} \\
+	\\
+	&= i^{w(\mathbf{a})}  \sum_{\mathbf{v} \in \mathbb{F}_2^m}{ |\mathbf{v}+\mathbf{e}_j \rangle  \langle \mathbf{v}|}  \sum_{\mathbf{u} \in \mathbb{F}_2^m}{i^{\mathbf{u S}\mathbf{u}^T} |\mathbf{u}\rangle  \langle\mathbf{u}|} (-1)^{(\mathbf{u+a})\mathbf{a}^T}|\mathbf{u} \rangle  \langle \mathbf{u+a}| \\
+	&= i^{w(\mathbf{a})} \sum_{\mathbf{v} \in \mathbb{F}_2^m}{i^{\mathbf{v}\mathbf{S}\mathbf{v}^T}(-1)^{(\mathbf{v+a})\mathbf{a}^T} |\mathbf{v}+\mathbf{e}_j \rangle  \langle \mathbf{v+a}|} \\
+	& = i^{w(\mathbf{a})} \sum_{\mathbf{v} \in \mathbb{F}_2^m}{i^{(\mathbf{v+a})\mathbf{S}(\mathbf{v+a})^T}(-1)^{\mathbf{v}\mathbf{a}^T} |\mathbf{v+a}+\mathbf{e}_j \rangle  \langle \mathbf{v}|}.
+\end{align*}
+Replacing the result into Eq. \eqref{EjW1}, we get
+\begin{align}
+	\mathbf{E}(\mathbf{e}_j, \mathbf{0})\mathbf{W}_1 &= \frac{1}{\sqrt{N}}  \sum_{\mathbf{a} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}{ (-1)^{w(\mathbf{a})} i^{(\mathbf{v+a})\mathbf{S}(\mathbf{v+a})^T}(-1)^{\mathbf{v}\mathbf{a}^T} |\mathbf{v+a}+\mathbf{e}_j \rangle  \langle \mathbf{v}|}} \nonumber \\
+	& = \frac{1}{\sqrt{N}}  \sum_{\mathbf{a} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}{ (-1)^{w(\mathbf{a})} i^{\mathbf{a}\mathbf{S}\mathbf{a}^T}(-1)^{\mathbf{v}\mathbf{a}^T} |\mathbf{a}+\mathbf{e}_j \rangle  \langle \mathbf{v}|}} \label{EjW1Fin}.
+\end{align}
+where at the last equality, we replaced $\mathbf{a}$ with $\mathbf{a+v}$. Hence, considering Eq. \eqref{EjW1Fin} and \eqref{WbarFirstDef}, one can proceed as follows
+\begin{align}
+	\overline{\mathbf{W}_1} \odot \mathbf{E}(\mathbf{e}_j, 0)\mathbf{W}_1& = \frac{1}{N} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a})\odot \sum_{\mathbf{b} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}{ (-1)^{w(\mathbf{b})} i^{\mathbf{b}\mathbf{S}\mathbf{b}^T}(-1)^{\mathbf{v}\mathbf{b}^T} |\mathbf{b}+\mathbf{e}_j \rangle  \langle \mathbf{v}|}} \nonumber \\
+	&=\frac{1}{N} \sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}}i^{w(\mathbf{a})}(-1)^{(\mathbf{b+v})\mathbf{b}^T}  i^{\mathbf{b}\mathbf{S}\mathbf{b}^T} (\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a}))\odot (|\mathbf{b}+\mathbf{e}_j \rangle  \langle \mathbf{v}|) }, \label{midlWbarEjWFirst}
+\end{align}
+where the term $\left( \overline{\mathbf{g}}\mathbf{E}\left(\mathbf{a},\mathbf{a}\right) \right)\odot \left( |\mathbf{b}+\mathbf{e}_j \rangle  \langle \mathbf{v}| \right)$ can be written as 
+\begin{align}
+	\overline{\mathbf{g}}\mathbf{E}(\mathbf{a},\mathbf{a}) &=i^{w(\mathbf{a})} \sum_{\mathbf{u} \in \mathbb{F}_2^m}{i^{-\mathbf{u S}\mathbf{u}^T} |\mathbf{u} \rangle  \langle \mathbf{u}|}\sum_{\mathbf{x} \in \mathbb{F}_2^m}{ (-1)^{\mathbf{x}\mathbf{a}^T}|\mathbf{x+a} \rangle  \langle \mathbf{x}|} \nonumber \\
+	&=i^{-w(\mathbf{a})} \sum_{\mathbf{u} \in \mathbb{F}_2^m}{(-1)^{\mathbf{u}\mathbf{a}^T}i^{-\mathbf{u S}\mathbf{u}^T} |\mathbf{u}\rangle  \langle\mathbf{u+a}|}. \label{gbarEaaFirst}
+\end{align} 
+Finally, replacing Eq. \eqref{gbarEaaFirst} into \eqref{midlWbarEjWFirst}, we have
+\begin{align}
+	\overline{\mathbf{W}_1} \odot \mathbf{E}(\mathbf{e}_n, 0)\mathbf{W}_1 &=\frac{1}{N} \sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}_2^m}{\sum_{\mathbf{v} \in \mathbb{F}_2^m}}(-1)^{(\mathbf{b+v})\mathbf{b}^T}  i^{\mathbf{b}\mathbf{S}\mathbf{b}^T} \sum_{\mathbf{u} \in \mathbb{F}_2^m}{(-1)^{\mathbf{u}\mathbf{a}^T}i^{-\mathbf{u S}\mathbf{u}^T} |\mathbf{u} \rangle  \langle \mathbf{u+a}|} \odot (|\mathbf{b}+\mathbf{e}_j \rangle  \langle \mathbf{v}|) } \nonumber \\
+	&\stackrel{(a)}{=}\frac{1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}^m_2}{i^{\mathbf{b S b}^T -(\mathbf{b+e}_j)\mathbf{S}(\mathbf{b+e}_j)^T} (-1)^{(2\mathbf{b}+\mathbf{a+e}_j)\mathbf{b}^T+(\mathbf{b+e}_j)\mathbf{a}^T} |\mathbf{b+e}_j \rangle  \langle \mathbf{a+b+e}_j |    } } \nonumber \\
+	&=\frac{1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}^m_2}{i^{-2\mathbf{b S }\mathbf{e}_j^T-\mathbf{e}_j \mathbf{S e}_j^T} (-1)^{(\mathbf{a+b})\mathbf{e}_j^T} |\mathbf{b+e}_j \rangle  \langle \mathbf{a+b+e}_j |  } }\nonumber\\
+	&= \frac{1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}^m_2}{i^{-2\mathbf{(a+b) S }\mathbf{e}_j^T+\mathbf{e}_j \mathbf{S e}_j^T} (-1)^{(\mathbf{b+e}_j)\mathbf{e}_j^T} |\mathbf{a+b} \rangle  \langle \mathbf{b} |    } }  \nonumber \\
+	&= \frac{-1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{\sum_{\mathbf{b} \in \mathbb{F}^m_2}{i^{-2\mathbf{a S }\mathbf{e}_j^T+\mathbf{e}_j \mathbf{S e}_j^T} (-1)^{(\mathbf{e}_j+\mathbf{e}_j\mathbf{S})\mathbf{b}^T} |\mathbf{b+a} \rangle  \langle \mathbf{b} |    } } \nonumber \\
+	&=\frac{-1}{N}\sum_{\mathbf{a} \in \mathbb{F}^m_2}{i^{-2\mathbf{a S }\mathbf{e}_j^T+\mathbf{e}_j \mathbf{S e}_j^T} \mathbf{D(a,e}_j+\mathbf{e}_j\mathbf{S})} \nonumber\\
+	&=\frac{-i^{\mathbf{e}_j \mathbf{S e}_j^T}}{N} \left(\sum_{\mathbf{a} \in \mathbb{F}^m_2}{(-1)^{\mathbf{a S }\mathbf{e}_j^T} \mathbf{D(a,0)}} \right) \mathbf{D(0},\mathbf{e}_j+\mathbf{e}_j \mathbf{S}), \label{FinalRes}
+\end{align}
+where $(a)$ comes from the fact that $|\mathbf{u}\rangle  \langle \mathbf{u+a}| \odot |\mathbf{b}+\mathbf{e}_j \rangle  \langle \mathbf{v}| = 1$ iff $\mathbf{u}=\mathbf{b}+\mathbf{e}_j, \mathbf{u+a}=\mathbf{v}$, thus $\mathbf{u} = \mathbf{b}+\mathbf{e}_j$ and $\mathbf{v}=\mathbf{a}+\mathbf{b}+\mathbf{e}_j$ is considered for proceeding.
+
+\noindent Multiplying the Walsh-Hadamard, Eq. \eqref{Hrefomed}, with Eq. \eqref{FinalRes}, and ignoring the last term, results in
+\begin{align}
+	\mathbf{H}_N^{\text{nat}} \sum_{\mathbf{a} \in \mathbb{F}^m_2}{(-1)^{\mathbf{a S }\mathbf{e}_j^T} \mathbf{D(a,0)}} &= \frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{v} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{u} \mathbf{v}^T } |\mathbf{u} \rangle  \langle \mathbf{v}|} \sum_{\mathbf{a}, \mathbf{x} \in \mathbf{F}_2^m}{\left(-1\right)^{\mathbf{S}_j \mathbf{a}^T } |\mathbf{x+a} \rangle  \langle \mathbf{x}|} \nonumber \\
+	& =\frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{x}, \mathbf{a} \in \mathbf{F}_2^m}{(-1)^{(\mathbf{x+a})\mathbf{u}^T} (-1)^{\mathbf{S}_j \mathbf{a}^T}|\mathbf{u} \rangle  \langle \mathbf{x}| } \nonumber \\ 
+	&=\frac{1}{\sqrt{N}} \sum_{\mathbf{u}, \mathbf{x} \in \mathbf{F}_2^m}{(-1)^{\mathbf{u} \mathbf{x}^T} \sum_{ \mathbf{a} \in \mathbf{F}_2^m}{(-1)^{(\mathbf{u+S}_j)\mathbf{a}^T}} |\mathbf{u} \rangle  \langle \mathbf{x}| }  \nonumber \\
+	&=\sqrt{N} \sum_{ \mathbf{x} \in \mathbf{F}_2^m}{(-1)^{\mathbf{S}_j \mathbf{x}^T} |\mathbf{S}_j \rangle  \langle \mathbf{x}|} \label{HsubRes}
+\end{align}
+where the last equality come from the fact that 
+\begin{equation}
+	\sum_{ \mathbf{a} \in \mathbf{F}_2^m}{(-1)^{(\mathbf{u+S}_j)\mathbf{a}^T}} = 
+	\begin{cases}
+		0 & \qquad \mathbf{u} \neq \mathbf{S}_j \\
+		N & \qquad \mathbf{u} = \mathbf{S}_j
+	\end{cases}.
+\end{equation}
+Finally, considering \eqref{FinalRes} and \eqref{HsubRes}, we get
+\begin{align}
+	\mathbf{H}_N^{\text{nat}}\overline{\mathbf{W}_1} \odot \mathbf{E}(\mathbf{e}_n, 0)\mathbf{W}_1 = \frac{-i^{\mathbf{e}_j \mathbf{S e}_j^T}}{\sqrt{N}} \sum_{ \mathbf{x} \in \mathbf{F}_2^m}{(-1)^{\mathbf{e}_j \mathbf{S} \mathbf{x}^T} |\mathbf{S}_j \rangle  \langle \mathbf{x}| },
+\end{align}
+which is equivalent with Eq. \eqref{FinHcalRes}.
+
+In the sequel, we consider the second representation, i.e., $\mathbf{W}_2 = \mathbf{gHg}^H$. Using the definition, we have
+\begin{align}
+		\mathbf{W}_2 & = \frac{1}{\sqrt{N}}\mathbf{g}\left(\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w\left(\mathbf{a}\right)}\mathbf{E}\left(\mathbf{a},\mathbf{a}\right)\right)\mathbf{g}^H = \frac{1}{\sqrt{N}}\sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}\left(\mathbf{a, a+aS} \right) \label{WsecDef}  \\ 
+		\overline{\mathbf{W}_2} &= \frac{1}{\sqrt{N}} \sum_a i^{-w(\mathbf{a})}(-1)^{\mathbf{a}\left(\mathbf{a}\mathbf{S} + \mathbf{a}\right)^T} 
+		\mathbf{E}\left(\mathbf{a, a+aS} \right), \label{WbarSecDef}
+\end{align}
+where in Eq. \eqref{WsecDef}, we used the fact that $\mathbf{g}\mathbf{E}(\mathbf{a},\mathbf{a}) \mathbf{g}^H = +\mathbf{E}(\mathbf{a,a+a S})$. It can be proven as follow
+\begin{align*}
+	\mathbf{g} \mathbf{E}(\mathbf{a,a}) \mathbf{g}^H &=\sum_{\mathbf{v} \in \mathbb{F}^m_2}{i^{\mathbf{v S v^T}} |\mathbf{v}\rangle  \langle \mathbf{v}|} i^{\mathbf{a}\mathbf{a}^T}\sum_{\mathbf{u} \in \mathbb{F}^m_2}{(-1)^{\mathbf{a}\mathbf{u}^T} |\mathbf{u+a} \rangle  \langle  \mathbf{u}|}\sum_{\mathbf{z} \in \mathbb{F}^m_2}{i^{-\mathbf{z S z^T}} |\mathbf{z} \rangle  \langle \mathbf{z}|} \nonumber \\
+	&= i^{\mathbf{a}\mathbf{a}^T}\sum_{\mathbf{u} \in \mathbb{F}^m_2}{i^{\mathbf{(u+a)S}(\mathbf{u+a})^T} (-1)^{\mathbf{a}\mathbf{u}^T}i^{-\mathbf{uS}\mathbf{u}^T} |\mathbf{u+a} \rangle  \langle \mathbf{u}|} \nonumber \\
+	&= i^{\left(\mathbf{a+aS}\right)\mathbf{a}^T}\sum_{\mathbf{u} \in \mathbb{F}^m_2}{(-1)^{\left(\mathbf{a+aS} \right)\mathbf{u}^T} |\mathbf{u+a} \rangle  \langle \mathbf{u}|}= i^{(\mathbf{a+aS})\mathbf{a}^T}\mathbf{D}(\mathbf{a, a+aS}) = \mathbf{E}(\mathbf{a, a+aS}).
+\end{align*}
+Also, Eq. \eqref{WbarSecDef} resulted from using Eq. \eqref{WsecDef} and, considering the fact that $\mathbf{D}^T\left(\mathbf{a, b}\right) = \left(-1\right)^{\mathbf{a b}^T} \mathbf{D}\left(\mathbf{a, b}\right)$. Using  Eq. \eqref{WsecDef}, the shifted version of the codeword can be written as
+\begin{align}
+	\mathbf{E}\left(\mathbf{e}_j, \mathbf{0}\right)\mathbf{W}_2 = &\frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w(\mathbf{a})}\mathbf{E}(\mathbf{e}_j,\mathbf{0})\mathbf{E}\left(\mathbf{a},\mathbf{a}\mathbf{S} + \mathbf{a}\right)  \nonumber \\ 
+	&= \frac{1}{\sqrt{N}} \sum_{\mathbf{a} \in \mathbb{F}^m_2} i^{w\left(\mathbf{a}\right)-\mathbf{a}\left(\mathbf{S} + \mathbf{I}\right)\mathbf{e}_j^T}\mathbf{E}\left(\mathbf{a} + \mathbf{e}_j,\mathbf{a}\mathbf{S} + \mathbf{a} \right) \label{EjWSecDef}
+\end{align}
+Using Eq. \eqref{WbarSecDef} and \eqref{EjWSecDef}, we get
+\begin{align}
+	\overline{\mathbf{W}_2} \odot \mathbf{E}\left(\mathbf{e}_j, \mathbf{0}\right)\mathbf{W}_2 &= \frac{1}{N} \sum_a i^{-w\left(\mathbf{a}\right)}(-1)^{\mathbf{a}\left(\mathbf{a}\mathbf{S} + \mathbf{a}\right)^T} \mathbf{E}\left(\mathbf{a}, \mathbf{a}\left(\mathbf{S} + \mathbf{I}\right) \right) \odot \sum_b i^{w(\mathbf{b}) - \mathbf{b}\left( \mathbf{S} + \mathbf{I} \right)\mathbf{e}_j^T} \mathbf{E}\left(\mathbf{b} + \mathbf{e}_j, \mathbf{b}(\mathbf{S} + \mathbf{I}) \right) \nonumber \\
+	&=\frac{1}{N} \sum_{\mathbf{a}\in \mathbb{F}_2^m} (-1)^{\mathbf{a}\left(\mathbf{a}\mathbf{S} + \mathbf{a}\right)^T} i^{-w\left(\mathbf{a}\right)} E\left(\mathbf{a}, \mathbf{a}\left(\mathbf{S} + \mathbf{I}\right) \right) \odot \sum_{\mathbf{b}\in \mathbb{F}_2^m} i^{w\left(\mathbf{b}\right) - \mathbf{b}\left(\mathbf{S} + \mathbf{I}\right)\mathbf{e}_j^T} E\left(\mathbf{b} + \mathbf{e}_j, \mathbf{b}\left(\mathbf{S} + \mathbf{I}\right)\right) \nonumber \\
+	&=\frac{1}{N}\sum_{\mathbf{a},\mathbf{b}\in \mathbb{F}_2^m} \delta_{\mathbf{a}, \mathbf{b} + \mathbf{e}_j} (-1)^{w\left(\mathbf{b}\right)-w\left(\mathbf{a}\right)} i^{\mathbf{b S b}^T-\mathbf{a S a}^T} D\left(\mathbf{a}, \mathbf{a}\left(\mathbf{S}+\mathbf{I}\right)\right) \odot D\left(\mathbf{b} + \mathbf{e}_j, \mathbf{b}\left(\mathbf{S}+\mathbf{I}\right)\right) \nonumber \\
+	&\stackrel{(a)}{=}\frac{1}{N}\sum_{\mathbf{b}\in \mathbb{F}_2^m}{(-1)^{w(\mathbf{b})-w\left(\mathbf{b}\oplus \mathbf{e}_j\right)} i^{\mathbf{b S b}^T-\mathbf{\left(\mathbf{b}\oplus \mathbf{e}_j\right) S }\left(\mathbf{b}\oplus \mathbf{e}_j\right)^T} } \times \nonumber\\
+	&\quad D\left(\mathbf{b}+\mathbf{e}_j, \mathbf{b}\left(\mathbf{S}+\mathbf{I}\right) +\mathbf{e}_j\left(\mathbf{S}+\mathbf{I}\right)\right) \odot D\left(\mathbf{b} + \mathbf{e}_j, \mathbf{b}\left(\mathbf{S}+\mathbf{I}\right) \right) \nonumber \\
+	&\stackrel{(b)}{=}\frac{-1}{N}\sum_{\mathbf{b}\in \mathbb{F}_2^m} i^{\mathbf{b S b}^T-\mathbf{\left(\mathbf{b}\oplus \mathbf{e}_j\right) S }\left(\mathbf{b}\oplus \mathbf{e}_j\right)^T} D\left(\mathbf{b} + \mathbf{e}_j, \mathbf{e}_j\left(\mathbf{S}+\mathbf{I}\right) \right)   \nonumber \\
+	&=\frac{-i^{-\mathbf{e}_j \mathbf{S e}_j}}{N}\sum_{\mathbf{b}\in \mathbb{F}_2^m} (-1)^{\mathbf{b Se}_j^T} D\left(\mathbf{b} + \mathbf{e}_j, \mathbf{e}_j\left(\mathbf{S}+\mathbf{I}\right)\right),
+\end{align}
+where $(a)$ and $(b)$ are achieved using lemma \ref{LemabEqual} and \ref{LemaDabcDac}, respectively. Also, the last term is equal to Eq. \eqref{FinalRes}, and therefore applying the Hadamard transform, we get the same result. 
+\end{proof}
+\begin{remark}
+We note that Theorem \ref{TheoHowardHowWork} reveals the location of the non-zero elements. In fact, $|\mathbf{S}_j \rangle$ is a map between the $j$th row of $\mathbf{S}$ and the basis vectors in $2^m$ and it has a non-zero element at the location of decimal mapping of the $j$th row of $\mathbf{S}$. Then, This theorem emphasizes that, at the output of the algorithm, non-zero elements are located at the row indexed by $\mathbf{S}_j$.
+\end{remark}
+
+Also, it is mentioned in \cite{HowardAlg08} that instead of using $\mathbf{e}_j$, it is better to use $\mathbf{e}_j+\mathbf{e}_{j-1}$ (also it has been used in \cite{CHIRRUP19}). The main idea behind this approach is the multiple BCs scenario. Consider the case of two BCs received at the receiver, having the same $j$th row. It can happen that the next row of each of them can't be found using the Howard algorithm. In the following proposition, we provide proof of this statement.
+\begin{proposition}
+	In the multiple-BC transmit/receive scenarios, using shift by $\mathbf{e}_j$ may fail row recovery in the Howard algorithm, and it is better to use $\mathbf{e}_j+\mathbf{e}_{j-1}$.
+\end{proposition}
+\begin{proof}
+	Consider the case that at the receiver two BCs have been received with parameters $\mathbf{S}, \mathbf{b}$ and $\mathbf{S}', \mathbf{b}'$, such that $\mathbf{S}_{j}=\mathbf{S}'_{j}$. Applying the procedure mentioned in theorem \ref{TheoHowardHowWork} for finding $\mathbf{S}_{j}$, results in
+	\begin{equation}
+		\mathbf{H}^{nat}_N\left(\overline{\mathbf{y}\left(\mathbf{a}\right)} \mathbf{y}\left(\mathbf{a+e}_j\right) \right) = \left((-1)^{\mathbf{b}_1 \mathbf{e}_j^T}+(-1)^{\mathbf{b}' \mathbf{e}_j^T}\right) |\mathbf{S}_{j} \rangle,
+	\end{equation}
+where it can be seen that if $\mathbf{b}_j \neq \mathbf{b}'_j$, results in cancellation. However, using $\mathbf{e}_j+\mathbf{e}_{j-1}$, if $\mathbf{S}_{j-1}\neq \mathbf{S}'_{j-1}$, then the non-zero location at the output of the algorithm for each of the BCs will be different and both can survive.
+\end{proof}
+\subsection{List Decoding for Binary Chirp}
+In  this section, using the algebraic features of the BC, we introduce a new algorithm that outperforms the original Howard. 
+
+Considering a binary symmetric matrix $\mathbf{S}$, a maximal commutative subgroup of $\mathcal{HW}_N$ can be defined as 
+\begin{equation}
+	\mathcal{S}_{\mathbf{S}} = \left\{ \mathbf{E}\left(\mathbf{x}, \mathbf{x S} \right) \: | \: \mathbf{x}\in \mathbb{F}_2^m \right\}.
+\end{equation}
+Using $m$ Pauli matrices $\mathbf{E}\left(\mathbf{e}_j, \mathbf{S}_j\right), r=1,...,m$, the subgroup $\mathcal{S}_{\mathbf{S}}$ can be generated. Also, it can be seen that a BC with parameters $\mathbf{S, b}$ is a simultaneous eigenvector of $\mathcal{S}_{\mathbf{S}}$ and indeed of $m$ Pauli matrices, i.e., $\mathbf{E}\left(\mathbf{e}_j, \mathbf{S}_j\right)$. This is the main property that enables an efficient low-complex decoding algorithm.
+
+The BC defined in Eq. \eqref{BCmainDef}, can be decoded by finding a maximum set of commuting Pauli $\mathbf{E}$, such that the received signal is close to a common eigenvector of them. Following lemma clarifies this fact.
+\begin{lemma}\label{LemmaBCeigenvector}
+	The BC, defined in Eq. \eqref{BCmainDef}, is a eigenvector of $\mathbf{E}\left(\mathbf{x}, \mathbf{x S}\right)$, i.e.,
+	\begin{equation}
+		\mathbf{E}\left(\mathbf{x}, \mathbf{x S}\right) \mathbf{w}_{\mathbf{S}, \mathbf{b}} = \left(-1\right)^{\mathbf{x b}^T} \mathbf{w}_{\mathbf{S}, \mathbf{b}}.
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	According to the definition, we can perform as follows
+	\begin{align}
+		\mathbf{E}\left(\mathbf{x}, \mathbf{x S}\right) \mathbf{w}_{\mathbf{S}, \mathbf{b}} &= \frac{i^{\mathbf{xSx}^T}}{\sqrt{N}}\sum_{\mathbf{u}\in \mathbb{F}_2^m}{(-1)^{\mathbf{xS u}^T} i^{\mathbf{uSu}^T +2\mathbf{u b}^T} |\mathbf{u+x} \rangle } \nonumber \\
+		&= \frac{i^{\mathbf{xSx}^T}}{\sqrt{N}}\sum_{\mathbf{v}\in \mathbb{F}_2^m}{(-1)^{\mathbf{xS}\left(\mathbf{v+x}\right)^T } i^{\left(\mathbf{v+x}\right) \mathbf{S} \left(\mathbf{v+x}\right)^T +2\left(\mathbf{v+x}\right)\mathbf{b}^T} |\mathbf{v} \rangle } \nonumber \\
+		&= (-1)^{\mathbf{x b}^T}\mathbf{w}_{\mathbf{S, b}}.
+	\end{align}
+\end{proof}
+\noindent Therefore, similar to the Howard algorithm, one row of $\mathbf{S}$ at a time can be estimated \cite{HowardAlg08}. For estimating the $j$th row of $\mathbf{S}$, $\mathbf{x}=\mathbf{e}_j$ is set. However, since $\mathbf{S}$ is a symmetric matrix, we need to consider the previously found rows. Define $\mathcal{R}$ as a set of previously determined rows, and $\widehat{\mathbf{S}}$ the partial symmetric matrix determined by the rows in $\mathcal{R}$. Consequently, the search space for $\mathbf{E}\left(\mathbf{e}_j,\mathbf{z} \right)$ is restricted to
+\begin{equation}\label{symetConds}
+	\mathcal{Z}_j = \left\{ \mathbf{z}\in \mathbb{F}_2^m \: | \: z_i = \widehat{s}_{j,i} \text{ for all } i \in \mathcal{R} \right\}
+\end{equation}
+proportional to $\widehat{\mathbf{S}}$. In fact, for estimating the $j$th row of $\mathbf{S}$, we need to search for a Pauli $\mathbf{E}=\mathbf{E}\left(\mathbf{e}_j, \mathbf{z}\right); \; \mathbf{z}\in \mathcal{Z}$ such that $\mathbf{E}\mathbf{w}_{\mathbf{S, b}} = \pm \mathbf{w}_{\mathbf{S, b}}$. Also, for improving the estimation of the next rows, a projection operator can be used. The following lemma illuminates this fact.
+\begin{lemma}
+	Using the projection operator
+	 \begin{equation}
+	 	\prod{_{j, \epsilon}} \triangleq \frac{\mathbf{I}_N+(-1)^{\epsilon} \mathbf{E}\left(\mathbf{e}_j, \mathbf{s}_j\right)}{2},
+	 \end{equation}
+for estimating the parameters of the BC, could result in degradation of the noise power.
+\end{lemma}
+\begin{proof}
+	Note that by considering lemma \ref{LemmaBCeigenvector}, we have
+	\begin{equation}
+		\prod{_{j, \epsilon}} \mathbf{w}_{\mathbf{S, b}} = \left\{
+		\begin{array}{lll}
+			\mathbf{w}_{\mathbf{S, b}}, & \text{if} & \epsilon = \mathbf{b}_j \\
+			\mathbf{0}, & \text{if} & \epsilon \neq \mathbf{b}_j
+		\end{array}
+		 \right. .
+	\end{equation}
+In fact this operator project the received signal to an $N/2$-dimensional subspace. Hence, multiplying the received signal with this projection results in
+\begin{equation}
+	\prod{_{j, \epsilon}} \mathbf{y} = \mathbf{w}_{\mathbf{S,b}} + \prod{_{j, \epsilon}} \mathbf{n} .
+\end{equation}
+Assuming that the noise is circularly symmetric and $\text{i.i.d}$, then $p\left(\mathbf{n}\right) = p\left(\mathbf{U n}\right)$, where $p\left(\mathbf{n}\right)$ denotes the probability distribution of the noise. This assumption holds for the considered system model, i.e., AWGN. Then the power of noise is halved by using this projection as follows
+\begin{align}
+	E\left\{ \left\lVert \prod{_{j, \epsilon}} \mathbf{n} \right\rVert^2 \right\}& = \int{p\left(\mathbf{n}\right) \mathbf{n}^H \prod{_{j, \epsilon}} \; \mathbf{n}\; d\mathbf{n} d\mathbf{n}^*} \nonumber \\
+	& = \int{p(\mathbf{n}) \mathbf{n}^H \mathbf{U}^H \mathbf{I}_{N/2, N} \mathbf{U} \; \mathbf{n} \; d\mathbf{n} d\mathbf{n}^*} \nonumber \\
+	&= \frac{1}{2}E\left\{\left\lVert \mathbf{n} \right\rVert^2 \right\},
+\end{align}  
+where $\mathbf{I}_{N/2, N}$ is the identity with half-diagonal elements equal to zero. 
+\end{proof}
+\noindent Another potential improvement in the decoding process is the selection of starting row. That means it is better to start with the row that is less corrupted by the noise. Algorithm \ref{alg:DecOrdSel} summarizes the procedure.
+\begin{algorithm}
+	\caption{Decoding order selection.}\label{alg:DecOrdSel}
+	\begin{algorithmic}[1]
+		\Require Received signal $\mathbf{y}$.
+		\Ensure Decoding order $\mathcal{O}$.
+		\For{$j=1,...,m$}
+		\State Compute $f_j(\mathbf{a}) = \mathbf{H} \left(\overline{\mathbf{y}(\mathbf{a})} \odot \mathbf{y}\left(\mathbf{a+e}_j\right) \right)$.
+		\State $\mu \left(j\right) = \max{f_j\left(\mathbf{a}\right)}$.
+		\EndFor{}
+		\State Output decoding order is  the order resulting from sorting $\mu$ in descending order.
+	\end{algorithmic}
+\end{algorithm}
+Also, the low-complexity algorithm, based on the mentioned lemmas, for decoding each row is outlined in Algorithm \ref{alg:RowDec}.
+ \begin{algorithm}
+ 	\caption{Decoding $j$th row of $\mathbf{S}$}\label{alg:RowDec}
+ 	\begin{algorithmic}[1]
+ 		\Require Input signal $\mathbf{y}$, number of output candidates $K$, partial estimate $\widehat{\mathbf{S}}, \widehat{\mathbf{b}}$, estimated rows $\mathcal{R}$, Index of desired row to be estimated, $j$.
+ 		\Ensure List of $K$ partial candidates $\widehat{\mathbf{S}}_j$, metrics $\mu_k$, $\widehat{\mathbf{b}}$.
+ 		\State Compute $f_j(\mathbf{a}) = \mathbf{H}\left(\overline{\mathbf{y}(\mathbf{a})} \odot \mathbf{y}\left(\mathbf{a+e}_j\right) \right)$.
+ 		\State Find search set $\mathcal{Z}_j\subset \mathbb{F}_2^m$ from $\mathcal{R}, \widehat{\mathbf{S}}$, and $j$ using \eqref{symetConds}.
+ 		\State Select $\mathbf{z}_k \in \mathcal{Z}_j, k=1,...,K$ according to $K$ largest $\left\lvert f_j(\mathbf{a}) \right\rvert$.
+ 		\State Define $\mu = \left\lVert \mathbf{y} \right\rVert$.
+ 		\For{$k=1,...,K$}
+ 		\State Estimated $\widehat{\mathbf{S}}_k$ is $\widehat{\mathbf{S}}$ with $\widehat{\mathbf{S}}_j = \mathbf{z}_k$.
+ 		\State $\sigma_k = \text{sign }f_j(\mathbf{z}_k)$.
+ 		\State $\mu_k = $
+ 		\State $\widehat{b}_j = \frac{1+\sigma_k}{2}$.
+ 		\State $\mathbf{z}_k = \frac{1}{2}\left(\mathbf{I}+\sigma_k \mathbf{E}\left(\mathbf{e}_j, \mathbf{z}_k\right)\right) \mathbf{z}$. 
+ 		\EndFor{}
+ 	\end{algorithmic}
+ \end{algorithm}
+ Finally, the proposed low-complex algorithm is given by Algorithm \ref{alg:FinBCDecoder}, which is based on keeping alive the multiple candidates to improve the decoding accuracy.
+  \begin{algorithm}
+ 	\caption{List decoding approach for decoding BCs}\label{alg:FinBCDecoder}
+ 	\begin{algorithmic}[1]
+ 		\Require Received signal $\mathbf{y}$, decoding order $\mathcal{O}$.
+ 		\Ensure Estimated $\widehat{\mathbf{S}}, \widehat{\mathbf{b}}$. 
+ 		\State \textbf{Initialize}: Set $\mathcal{R}=\varnothing$ and candidate set $\mathcal{C} = \left\{ \left( \mathbf{y}, K, \mathbf{0}_{m\times m}, \mathbf{0}_{m \times 1} , \varnothing ,0\right) \right\}$
+ 		\For{$j=1,...,m$}
+ 		\State Consider row $r = \mathcal{O}(j)$ to be estimated.
+ 		\State Initialize candidate list $\mathcal{N} = \varnothing$.
+ 		\State Number of branches $K' = \min \left(K, 2^{m-i+1}\right)$.
+ 		\For{each $\left(\mathbf{z}_k,K', \widehat{\mathbf{S}}_k,\widehat{\mathbf{b}}, \mathcal{R},r \right) \in \mathcal{C} $}
+ 		\State compute new candidates $\mathcal{N}_c = \text{Algorithm 2}\left(\mathbf{y}_k, K',\widehat{\mathbf{S}}_k, \widehat{\mathbf{b}}_k, \mathcal{R}, r \right)$.
+ 		\State $\mathcal{N} = \mathcal{N} \cup \mathcal{N}_c$
+ 		\EndFor 
+ 		\If{$j<m$}
+ 		\State $\mathcal{C}$ is $\min \left(K, \text{size}\left(\mathcal{N}\right) \right)$ subset of $\mathcal{N}$ with largest $\mu_k$.
+ 		\State Update decoded rows $\mathcal{R}=\mathcal{R}\cup \left\{ r\right\}$.
+ 		\Else
+ 		\State Find elements correspond to maximum $\mu_k$ in $\mathcal{N}$.
+ 		\EndIf
+ 		\EndFor{}
+ 	\end{algorithmic}
+ \end{algorithm}
+ 
+\section{Extended Binary Chirps}
+In this section, first, we discuss the extended BC used in \cite{PitvalExtendedChirp21} and show that it lives at the 3rd level of the Hierarchy. Then, we introduce a new extended BC that lives at the $n$th level of the Hierarchy. Then, for the proposed higher-level BCs, we find the minimum distance, and finally, we propose simplified decoding.
+\subsection{Extended Binary Chirp at the 3rd Level of the Hierarchy}
+An extension to the BCs has been considered in \cite{PitvalExtendedChirp21}, where they assumed  $\mathbf{S}=\overline{\mathbf{S}}+\frac{1}{2}\widetilde{\mathbf{S}}$ in Eq. \eqref{BCmainDef}, in which $\widetilde{\mathbf{S}}$ is an alternating matrix, i.e., symmetric with all zero diagonal elements. Using this extension, for $m=2$, it can be seen that the number of codewords doubled. However, the maximum coherence increases from $\frac{1}{\sqrt{2}}$ to $\sqrt{\frac{5}{8}}$. As we know, the original BC is an element of $\text{Cliff}_N$ and lives in the 2nd level of the hierarchy. Nevertheless, in the following lemma, we show that the extended BC considered in \cite{PitvalExtendedChirp21} belongs to 3rd level of the Hierarchy.
+\begin{lemma}\label{lemaPitavalLevel}
+	The extended BC described by
+	\begin{equation}\label{BCExt1Def}
+		\mathbf{w}_{\text{Ext}} = \dfrac{1}{\sqrt{N}}\left[i^{\mathbf{v}\left( \overline{\mathbf{S}}+\frac{1}{2}\widetilde{\mathbf{S}} \right)\mathbf{v}^T + 2\mathbf{b}\mathbf{v}^T } \right]_{\mathbf{v} \in \mathbb{F}_2^m},
+	\end{equation}
+where $\widetilde{\mathbf{S}}$ is alternating matrix, belongs to 3rd level of the Hierarchy.
+\end{lemma}
+\begin{proof}
+	Consider $\mathbf{w}_{\text{Ext}} \mathbf{E}\left(\mathbf{a,b}\right) \mathbf{w}_{\text{Ext}}^H$ for finding the level of the Hierarchy as follows
+	\begin{align}
+		\mathbf{w}_{\text{Ext}} \mathbf{E}\left(\mathbf{a, b}\right) \mathbf{w}_{\text{Ext}}^H &=i^{\mathbf{a b}^T} \sum_{\mathbf{v}\in \mathbf{F}_2^m}{i^{\left(\mathbf{v}\oplus \mathbf{a}\right)\left(\overline{\mathbf{S}}+\frac{1}{2}\widetilde{\mathbf{S}}\right)\left(\mathbf{v}\oplus \mathbf{a}\right)^T-\mathbf{v}\left(\overline{\mathbf{S}}+\frac{1}{2}\widetilde{\mathbf{S}}\right)\mathbf{v}^T} (-1)^{\mathbf{v b}^T} |\mathbf{v+a}><\mathbf{v}|} \nonumber \\
+		&\stackrel{(a)}{=}i^{\mathbf{a b}^T} \sum_{\mathbf{v} \in \mathbf{F}_2^m}{i^{\left(\mathbf{v}+ \mathbf{a}-2\mathbf{v}\mathbf{D}_\mathbf{a}\right)\left(\overline{\mathbf{S}}+\frac{1}{2}\widetilde{\mathbf{S}}\right)\left(\mathbf{v}+ \mathbf{a}-2\mathbf{v}\mathbf{D}_\mathbf{a}\right)^T-\mathbf{v}\left(\overline{\mathbf{S}}+\frac{1}{2}\widetilde{\mathbf{S}}\right)\mathbf{v}^T} (-1)^{\mathbf{v b}^T} |\mathbf{v+a}><\mathbf{v}|} \nonumber \\
+		&\stackrel{(b)}{=} i^{\mathbf{a b}^T+\mathbf{a} \left(\overline{\mathbf{S}}+\frac{1}{2}\widetilde{\mathbf{S}}\right)\mathbf{a}^T}\sum_{\mathbf{v}\in \mathbf{F}_2^m}{i^{2\mathbf{v} \left(\overline{\mathbf{S}}+\frac{1}{2}\widetilde{\mathbf{S}}\right)\mathbf{a}^T-2\left(\mathbf{v+a}\right) \widetilde{\mathbf{S}} \mathbf{D}_\mathbf{a} \mathbf{v}^T+2\mathbf{v}\mathbf{D}_\mathbf{a} \widetilde{\mathbf{S}} \mathbf{D}_\mathbf{a} \mathbf{v}^T  } (-1)^{\mathbf{v b}^T} |\mathbf{v+a}><\mathbf{v}|} \nonumber \\
+		&\stackrel{(c)}{=} i^{\mathbf{a b}^T+\mathbf{a} \left(\overline{\mathbf{S}}+\frac{1}{2}\widetilde{\mathbf{S}}\right)\mathbf{a}^T}\sum_{\mathbf{v}\in \mathbf{F}_2^m}{i^{\mathbf{v} \widetilde{\mathbf{S}} \mathbf{a}^T -2\mathbf{v}\mathbf{D}_{\mathbf{\overline{a}}}\widetilde{\mathbf{S}}\mathbf{D}_\mathbf{a} \mathbf{v}^T} (-1)^{\mathbf{v}\left(\mathbf{b+a}\overline{\mathbf{S}}+\mathbf{a}\widetilde{\mathbf{S}}\mathbf{D}_\mathbf{a}\right)^T} |\mathbf{v+a}><\mathbf{v}|} \nonumber \\
+		&\stackrel{(d)}{=} i^{\frac{1}{2}\mathbf{a} \widetilde{\mathbf{S}}\mathbf{a}^T} \mathbf{E}\left(\mathbf{a, b+a}\overline{\mathbf{S}}+\mathbf{a}\widetilde{\mathbf{S}}\mathbf{D}_\mathbf{a}\right) \text{diag}\left(i^{\mathbf{v}\mathbf{S}'\mathbf{v}^T}\right) \label{HierarchLevExt1}
+	\end{align} 
+where $(a)$ comes from the fact that for binary vectors $\mathbf{a}$ and $\mathbf{b}$, we have  $\mathbf{a} \oplus \mathbf{v} = \mathbf{a}+\mathbf{v}-2\mathbf{a}*\mathbf{v}$, $\mathbf{D}_{\mathbf{a}}$  is a diagonal matrix where it has $\mathbf{a}$ as its diagonal elements and $\mathbf{v}*\mathbf{a} = \mathbf{v}\mathbf{D}_{\mathbf{a}}$. $(b)$ is resulted from the symmetric property of $\overline{\mathbf{S}}$ and $\widetilde{\mathbf{S}}$, and in $(c)$, $\mathbf{D}_{\overline{\mathbf{a}}}$ is a diagonal matrix with $\overline{\mathbf{a}}=\mathbf{I}\oplus\mathbf{a}$ as diagonal elements. Finally, $(d)$ comes from the definition and  $\mathbf{S}'=\mathbf{D}_{\mathbf{a}\widetilde{\mathbf{S}} }-2\mathbf{D}_{\overline{\mathbf{a}}}\widetilde{\mathbf{S}}\mathbf{D}_\mathbf{a}$. As a well-known fact, $\text{diag}\left(i^{\mathbf{v S}' \mathbf{v}^T}\right)$ belongs to the Clifford group and since the element of Pauli group does not effect the Hierarchy level, we conclude that $\mathbf{w}\in\mathcal{C}_3$.
+\end{proof}
+\begin{remark}
+We note that if $\widetilde{\mathbf{S}} = \mathbf{0}$ at Eq. \eqref{HierarchLevExt1}, the result will be $\mathbf{E}\left(\mathbf{a}, \mathbf{b+a}\widetilde{\mathbf{S}}\right)$ which is consistent with \cite{Renagaswamy20LogicalCliff}. Then it can be seen that extending the BC using $\overline{\mathbf{S}}$, increases the level of the Hierarchy.
+\end{remark}
+\subsection{Extended Binary Chirp at the Level n}
+Motivated by this observation, we generalize the extended BC to $n$th level as follows.
+\begin{definition}\label{DefExtend2}
+	Define an extended BC as
+	\begin{equation}\label{DiagDefGen}
+		\tau_k\left(\mathbf{R}\right) = \text{diag}\left(\zeta_k^{\mathbf{vRv}^T\mod 2^k}\right),
+	\end{equation}
+where $\zeta_k = e^{\frac{2\pi i}{2^k}}$, and $\mathbf{R} \in \mathbf{Z}_{2^k}$ is a symmetric matrix, in which its anti-diagonal elements are in $\mathbf{Z}_{2^{k-1}}$.
+\end{definition}
+Using binary decomposition, $\mathbf{R}$ can be written in terms of binary symmetric matrices, i.e., $\mathbf{R}=\mathbf{S}_1+2\mathbf{S}_2+...+2^{k-1}\mathbf{S}_k = \sum_{i=1}^{k}{2^{i-1}\mathbf{S}_i}$. A symmetric matrix, $\mathbf{S}_i, \; i=1,2,...,k-1$ can be written as $\mathbf{S}_i = \mathbf{D}_i+\mathbf{A}_i+\mathbf{A}_i^T$, where $\mathbf{D}_i$ and $\mathbf{A}_i$ are diagonal and anti-diagonal matrices, respectively. However, for $\mathbf{S}_{k}=\mathbf{D}_k$, according to the definition of the BC, if $\mathbf{S}_{k}$ contains anti-diagonal elements, we have $2^{k-1}\mathbf{v} \left(\mathbf{A}_k + \mathbf{A}_k^T\right) \mathbf{v}^T \mod 2^k = 2^k \mathbf{v}\mathbf{A}_k \mathbf{v} \mod 2^k = 0$. In fact, $\mathbf{D}_k$ plays the Hadamard multiplication role in this extension as we have
+\begin{align}
+	\tau_k\left(\mathbf{R}\right) = \sum_{\mathbf{v}\in \mathbb{F}_2^m}{\zeta_k^{\mathbf{v}\sum_{i=1}^{k-1}{2^{i-1}\mathbf{S}_i } \mathbf{v}^T } (-1)^{\mathbf{v}\mathbf{d}_k^T} },
+\end{align} 
+where $\mathbf{d}_k$ is a vector consisting of diagonal elements of $\mathbf{D}_k$. The following theorem, indicates that this extension lives in level $k$ of the Hierarchy. 
+\begin{theorem}
+	The extended BC defined in Def. \ref{DefExtend2} lives in the $k$th level of the Hierarchy and generates at most $\left(k-1\right)2^{\frac{m\left(m+3\right) }{2} }$ codewords.
+\end{theorem}
+\begin{proof}
+	First, we prove that 
+	\begin{equation}\label{ConjRes}
+		\tau_k\left(\mathbf{R}\right)\mathbf{E}\left(\mathbf{a, b} \right)\tau_k^H\left(\mathbf{R}\right) = \zeta_k^{\mathbf{aRa}^T}\mathbf{E}\left(\mathbf{a, b}\right) \tau_{k-1}\left(\widetilde{\mathbf{R}} \right)
+	\end{equation}
+ as follows
+\begin{align}
+	\tau_k  \mathbf{E}\left( \left[\mathbf{a, b}\right]\right) \tau_k^H& = i^{\mathbf{ab}^T} \sum_{\mathbf{v}\in \mathbf{F}_2^m}{\zeta_k^{\mathbf{v R v}^T} |\mathbf{v}><\mathbf{v}|}\sum_{\mathbf{u}\in \mathbf{F}_2^m}{(-1)^{\mathbf{u b}^T} |\mathbf{u+a}><\mathbf{u}|}\sum_{\mathbf{x}\in \mathbf{F}_2^m}{\zeta_k^{-\mathbf{x R x}^T} |\mathbf{x}><\mathbf{x}|} \nonumber \\
+	&= i^{\mathbf{ab}^T} \sum_{\mathbf{u}\in \mathbf{F}_2^m}{ \zeta_k^{\left(\mathbf{u\oplus a}\right)\mathbf{R}\left(\mathbf{u \oplus a}\right)^T-\mathbf{u R u}^T } (-1)^{\mathbf{u b}^T} |\mathbf{u+a}><\mathbf{u}|} \nonumber\\
+	&= i^{\mathbf{ab}^T} \sum_{\mathbf{u}\in \mathbf{F}_2^m}{ \zeta_k^{\left(\mathbf{u + a}-2\mathbf{u}*\mathbf{a} \right)\mathbf{R}\left(\mathbf{u + a}-2\mathbf{u}*\mathbf{a}\right)^T-\mathbf{u R u}^T } (-1)^{\mathbf{u b}^T} |\mathbf{u+a}><\mathbf{u}|} \nonumber \\
+	&\stackrel{(a)}{=} i^{\mathbf{ab}^T }\zeta_k^{\mathbf{aRa}^T} \sum_{\mathbf{u}\in \mathbf{F}_2^m}{ \zeta_k^{2\mathbf{aRu}^T-4\left( \mathbf{u\mathbf{D}_{\overline{\mathbf{a}}}+a}\right)\mathbf{R}\mathbf{D}_{\mathbf{a}} \mathbf{u}^T } (-1)^{\mathbf{u b}^T} |\mathbf{u+a}><\mathbf{u}|} \nonumber \\
+	&\stackrel{(b)}{=} i^{\mathbf{ab}^T } \zeta_k^{\mathbf{aRa}^T} \sum_{\mathbf{u}\in \mathbf{F}_2^n}{ \zeta_{k-1}^{\mathbf{u}\left(\mathbf{D}_{\mathbf{G}}-2 \mathbf{D}_{\overline{\mathbf{a}}} \mathbf{R}^{'}\mathbf{D}_{\mathbf{a}}  \right) \mathbf{u}^T } (-1)^{\mathbf{u b}^T} |\mathbf{u}><\mathbf{u}|} \nonumber \\
+	&= \zeta_k^{\mathbf{aRa}^T}\mathbf{E}\left(\mathbf{a, b}\right) \tau_{k-1}\left(\widetilde{\mathbf{R}} \right),
+\end{align}
+where $(a)$ results from the definition and $\mathbf{D}_{\overline{\mathbf{a}}} \triangleq \mathbf{I}-\mathbf{D}_{\mathbf{a}}$, in $(b)$, $\mathbf{G}\triangleq \mathbf{a}\mathbf{R}^{''}-2\mathbf{a}\mathbf{R}' \mathbf{D}_{\mathbf{a}}$, where $\mathbf{R}' = \mathbf{S}_1+2\mathbf{S}_2+...+2^{k-3}\mathbf{S}_{k-2}$ and $\mathbf{R}^{''}=\mathbf{S}_1+2\mathbf{S}_2+...+2^{k-2}\mathbf{S}_{k-1}$, and finally $\widetilde{\mathbf{R}} = \mathbf{D}_{\mathbf{G}}-2\mathbf{D}_{\overline{\mathbf{a}}} \mathbf{R}^{'}\mathbf{D}_{\mathbf{a}}$. Thus using lemma \ref{lemaPitavalLevel}, we know that $\tau_3$ lives in 3rd level, and  hence using Eq. \eqref{ConjRes} and definition of the Hierarchy level, $\tau_4 \in \mathcal{C}_3$. Continuing this approach it can be seen that $\tau_{k}\in \mathcal{C}_k$.
+
+Also, considering the binary representation of the $\mathbf{R}$, we have $k-1$ complete binary symmetric matrix in which each of them can generate $2^{\frac{m(m+1)}{2}}$ codewords, and finally $\mathbf{D}_k$ can generate $2^m$ different codewords. 
+
+\textbf{Another approach}: Using  induction. Let's assume that $\tau_k\left(\mathbf{R}_k\right) \in \mathcal{C}_k$, then we need to prove that $\tau_k\left(\mathbf{R}_{k+1}\right)$ belongs to $\mathcal{C}_{k+1}$. Using the binary representation, $\mathbf{R}_{k+1}=\mathbf{S}_1+2\mathbf{S}_2+...+2^{k-1}\mathbf{S}_{k}+2^k \mathbf{D}_{k+1}$, we have $\tau_{k+1}=\tau_{k}(\mathbf{R}'_k)\text{diag}\left(\zeta_{k+1}^{\mathbf{v}\mathbf{S}_1 \mathbf{v}^T}\right)$. Then $\tau_{k+1}(\mathbf{R}_{k+1})\mathbf{E}\left(\mathbf{a,b}\right)\tau_{k+1}^H(\mathbf{R}_{k+1}) = \tau_k\left(\mathbf{R}'_k\right) \text{diag}\left(\zeta_{k+1}^{\mathbf{v}\mathbf{S}_1\mathbf{v}^T} \right) \mathbf{E}\left(\mathbf{a,b}\right) \text{diag}\left(\zeta_{k+1}^{-\mathbf{v}\mathbf{S}_1 \mathbf{v}^T} \right)\tau_k^H\left(\mathbf{R}'_k\right)$. Using a similar approach as lemma \ref{lemaPitavalLevel}, we have
+\begin{equation*}
+	\text{diag}\left(\zeta_{k+1}^{\mathbf{v}\mathbf{S}_1\mathbf{v}^T} \right) \mathbf{E}\left(\mathbf{a,b}\right) \text{diag}\left(\zeta_{k+1}^{-\mathbf{v}\mathbf{S}_1 \mathbf{v}^T} \right) = \zeta_{k+1}^{\mathbf{a}\mathbf{S}_1 \mathbf{a}^T}\mathbf{E}\left(\mathbf{a,b}\right)\tau_{k}\left(\widetilde{\mathbf{R}}\right),
+\end{equation*}
+where $\widetilde{\mathbf{R}} = \mathbf{D}_{\mathbf{a}}+2\mathbf{D}_{\overline{\mathbf{a}}}\mathbf{S}_1 \mathbf{D}_{\mathbf{a}}$. Thus, this results in $\zeta_{k+1}^{\mathbf{a}\mathbf{S}_1 \mathbf{a}^T} \tau_k\left(\mathbf{R}'_k\right)  \mathbf{E}\left(\mathbf{a,b}\right) \tau_{k}\left(\widetilde{\mathbf{R}}\right) \tau_k^H\left(\mathbf{R}'_k\right)=\zeta_{k+1}^{\mathbf{a}\mathbf{S}_1 \mathbf{a}^T} \tau_k\left(\mathbf{R}'_k\right)  \mathbf{E}\left(\mathbf{a,b}\right) \tau_{k}\left(\widetilde{\mathbf{R}}-\mathbf{R}'_k\right)$, in which similarly using the approach in lemma \ref{lemaPitavalLevel}, we have $\zeta_{k+1}^{\mathbf{a}\mathbf{R}_3 \mathbf{a}^T} \tau_{k}\left(\mathbf{R}_4\right) \in \mathcal{C}_k$. Since Pauli matrices do not affect the Hierarchy level, we can conclude that $\tau_{k+1}\left(\mathbf{R}_{k+1} \right) \in \mathcal{C}_{k+1}$. 
+\end{proof}
+Through the analysis of the Hierarchy, one can find out that there exists a connection between the binary representation of the symmetric matrix used in the extended BC and the levels. The most significant matrix, i.e., $\mathbf{D}_k$, results in the first level, the second most significant i.e., $\mathbf{S}_{k-1}$, results in the second level, and so on.
+\subsection{Minimum Distance }
+What is the effect of this extension on the minimum distance of the BC? We expect a decrease in the minimum distance since the number of codewords has been increased. The following theorem shed light on the maximum coherence or worst-case coherence.
+\begin{theorem}\label{minDistanceExtGen}
+	Maximum coherence between the codewords defined by the extended BC in Def. \ref{DefExtend2}, independent of $m$, is
+	\begin{equation}
+		\underset{i \neq j}{\max} \left\lvert \mathbf{w}_i^H \mathbf{w}_j \right\rvert = \cos\left(\frac{\phi_k}{2}\right),
+	\end{equation}
+where $\phi_k = \frac{2\pi}{2^k}$.
+\end{theorem}
+\begin{proof}
+	Considering the definition of the extended BC, we need to find 
+	\begin{equation}\label{maxSumEq}
+		\max \frac{1}{N}\sum_{v\in \mathbb{F}_2^m }{\zeta_k^{\mathbf{v} \left(\mathbf{R}_1- \mathbf{R}_2 \right) \mathbf{v}^T }}
+	\end{equation}
+where $\mathbf{R}_1$ and $\mathbf{R}_2$ correspond to codewords $\mathbf{w}_j$ and $\mathbf{w}_i$, respectively. For simplicity of analysis, set $\mathbf{R}=\mathbf{R}_1-\mathbf{R}_2$, and therefore term in the exponential can be written as $\mathbf{v R v}^T = \sum_{i=1}^m{r_{ii} v_i}+2\sum_{i<j}{r_{ij} v_i v_j } $. In fact, for calculating the summation, vector of $2^m$ different powers of $\zeta_k$ need to be considered, i.e., $\zeta_k$ to the power of the following vector
+\begin{equation}\label{sumDepth}
+	\mathbf{r} = \left( 0, r_{11}, ...,r_{mm}, r_{11}+r_{22}+2r_{12},...,r_{(m-1)(m-1)}+r_{mm}+2r_{m(m-1)},...,\sum_{i=1}^{m}{r_{ii}} +\sum_{i<j}{r_{ij}}\right),
+\end{equation}
+%\begin{equation}
+%	\mathbf{r} = \left( \zeta_k^0, \zeta_k^{r_{11}}, ...,\zeta_k^{r_{mm}}, \zeta_k^{r_{11}+r_{22}+2r_{12}},...,\zeta_k^{r_{(m-1)(m-1)}+r_{mm}+2r_{m(m-1)}},...,\zeta_k^{\sum_{i=1}^{m}{r_{ii}} +\sum_{i<j}{r_{ij}} } \right)
+%\end{equation}\label{sumDepth}
+where first element is result of $v_i = 0, i=1,...,m$, second term is results of $v_1=1, v_i=0, i=2,..,m$, and so on. It is obvious that maximum value for $S = \sum_{\mathbf{v} \in \mathbb{F}_2^m}{\zeta_k^{\mathbf{v R v}^T}} = \sum_{i=1}^{2^m}{\zeta_k^{a_i}}$ for different values of $\left(a_1,...,a_{2^m}\right)$ is $2^m \zeta_k^c$ and achieved when all terms are equal i.e., $a_1=a_2=...=a_{2^m}=c$. However, for calculating the summation in Eq. \eqref{maxSumEq}, as seen from Eq. \eqref{sumDepth}, we can not set all of the terms to be equal, since the first term is $0$, and setting other terms to be zero means all zero vector that leads to trivial case $\mathbf{R}_1 = \mathbf{R}_2$. Can we set other elements to be the same? The answer is no! For example setting $r_{11}=1, r_{ij} = 0$, affects $2^{m-1}$ other positions and the result of absolute value of the sum will be $2^{m-1}\left\lvert \left(1+\zeta_k\right) \right\rvert=2^{m}\cos\left(\frac{\phi_k}{2}\right)$. 
+
+It can be seen that if we set $r_{11}=\ell, 1\le \ell \le 2^k-1$ and $r_{ij}=0, \forall i,j = 2,...,m$, results in $2^m \cos\left(\ell \frac{\phi_k}{2}\right)< \cos\left( \frac{\phi_k}{2}\right)$. Another case that needs to check is the case that $r_{12}=1$ and zero otherwise. In this case only non-zero power appears when $v_1 = v_2 = 1$, which results in $\zeta_k^{2}$ in $2^{m-2}$ cases, and for the rest of them, we have all zeros in Eq. \eqref{sumDepth}. Hence, in this case, $\left\lvert S \right\rvert = \left\lvert 2^{m-2}\left(3+\zeta_k^2\right) \right\rvert < 2^m \cos\left(\frac{\phi_k}{2}\right)$. Another case worth investigating is the case where $r_{11}=r_{12} = 1$ and other elements are zero. 
+
+In this case 4 different situations exist: $\left(v_1,v_2\right)=\left(0,0\right)$, $\left(v_1,v_2\right)=\left(1,0\right)$, $\left(v_1,v_2\right)=\left(0,1\right)$, and $\left(v_1,v_2\right)=\left(1,1\right)$, which result in $\zeta_k^0$, $\zeta_k^1$, $\zeta_k^2$, and $\zeta_k^3$, respectively. Therefore, $\left\lvert S \right\rvert = 2^{m-2}\left\lvert 1+\zeta_k+\zeta_k^2+\zeta_k^3 \right\rvert < 2^m \cos\left(\frac{\phi_k}{2}\right)$, since the summation is over four different directions rather than two directions. Also, one can consider the case that all elements are zero, except $r_{12}=r_{23}=1$. In this case using similar reasoning $\left\lvert S \right\rvert = 2^{m-3}\left\lvert 5+2\zeta_k^2+\zeta_k^4 \right\rvert < 2^m \cos\left(\frac{\phi_k}{2}\right)$ (needs considering 5 different cases concentrating on $v_2=0$ and $v_2=1$). Also, another possible candidate for generating the maximum value of $\left\lvert S \right\rvert$ is considering the case $r_{12}=r_{34}=1$ and other elements to be zero, which results in $\left\lvert S \right\rvert = 2^{m-4} \left\lvert 7+4\zeta_k^2+\zeta_k^4 \right\rvert< 2^m \cos\left(\frac{\phi_k}{2}\right)$.
+
+Hence, we can see that by adding more non-zero elements to $\mathbf{R}$, we get lower values for $\left\lvert S \right\rvert$, since the summation is over more different and also larger phases in these cases. Hence, we conclude that ${\max}\frac{1}{N}\left\lvert S \right\rvert = \cos\left(\frac{\phi_k}{2}\right)$.
+\end{proof}
+Considering $k=2$, one could get $\max \frac{1}{N}\left\lvert S \right\rvert = \cos\left(\frac{\pi}{4}\right)$, which results in $d_{c} = \frac{1}{\sqrt{2}}$ which is consistent  with result in \cite{caledJSAC10, PitavalGrass20}. Also, the following proposition points out the minimum distance for extended BC considered in \cite{PitvalExtendedChirp21} (Eq. \ref{BCExt1Def}).
+\begin{proposition}
+	For the extended BC defined in Eq. \eqref{BCExt1Def}, the maximum coherence between codewrods is $\sqrt{\frac{5}{8}}$ and hence the minimum chordal distance is $\sqrt{\frac{3}{8}}$.
+\end{proposition}
+\begin{proof}
+	Using similar approach as in theorem \ref{minDistanceExtGen}, consider $\mathbf{R}=2\overline{\mathbf{S}}+\widetilde{\mathbf{S}}$ and $S = \frac{1}{N}\sum_{v\in \mathbb{F}_2^m}{i^{\frac{1}{2} \left( \mathbf{v R v}^T \right)} }$. One candidate is $\overline{s}_{11}=1$ and zero otherwise, where results in $\frac{1}{N}\left\lvert S \right\rvert = \frac{2^{m-1}}{N}\left\lvert 1+i \right\rvert = \frac{1}{\sqrt{2}}$. Another candidate is $\overline{s}_{12}=1$ in which results in $\frac{1}{N}\left\lvert S \right\rvert=\frac{2^{m-2}}{N}\left\lvert 3+i^2 \right\rvert=\frac{1}{2}$. The case that $\widetilde{s}_{12}=1$ and other elements are zero results in $\frac{1}{N}\left\lvert S \right\rvert=\frac{2^{m-2}}{N}\left\lvert 3+i \right\rvert=\sqrt{\frac{5}{8}}$ which is the maximum coherence. Considering other options always result in smaller coherence values using same reasoning as in theorem \ref{minDistanceExtGen}. 
+\end{proof}
+\subsection{Simplified Extended Binary Chirp Decoder}
+In this subsection, we propose a low complexity algorithm to decode the extended BC. In \cite{PitvalExtendedChirp21}, the authors proposed an exhaustive search approach for recovering the extended BC, defined in Eq. \eqref{BCExt1Def}. To find $\widetilde{\mathbf{S}}$, they multiplied all the candidates by the received signal, then applied the Howard algorithm to recover the relevant $\overline{\mathbf{S}}$. Finally, among all the options, the best candidate is selected. However, this approach isn't suitable for the large values of $m$, e.g., $m=10$ needs to test $2^{\frac{10 \times 9}{2}}=2^{45}$ different candidates.
+
+Instead, we propose at first to consider the element-wise power 2 of the received signal, i.e., $\mathbf{y}^2$. Then apply the Howard algorithm to find $\widetilde{\mathbf{S}}$, and by using the selected candidate, reduce it from the received signal. Finally, apply the Howard algorithm to find $\widetilde{\mathbf{S}}$. The idea behind this approach is that, in the non-noisy condition, we have
+ \begin{equation}
+ 	\mathbf{y}^2=\frac{1}{N}\left[ i^{\mathbf{v} \left(2 \overline{\mathbf{S}}+\widetilde{\mathbf{S}} \right)\mathbf{v}^T +4 \mathbf{b v}^T} \right]_{\mathbf{v} \in \mathbb{F}_2^m}=\frac{1}{N}\left[ i^{\mathbf{v} \widetilde{\mathbf{S}} \mathbf{v}^T +2\mathbf{d}_{\mathbf{s}}\mathbf{v}^T } \right]_{\mathbf{v} \in \mathbb{F}_2^m},
+ \end{equation}
+where $\mathbf{d}_{\mathbf{s}}$ denotes the diagonal elements of $\overline{\mathbf{S}}$. Hence, after considering the element-wise power 2, the received signal is a BC with $\mathbf{S}=\widetilde{\mathbf{S}}$ and $\mathbf{b}=\mathbf{d}_{\mathbf{s}}$. Therefore, the Howard algorithm can be applied directly to find these parameters. After finding $\mathbf{\widetilde{\mathbf{S}}}$, we can perform 
+\begin{equation}
+\mathbf{y}\odot \left[ i^{-\frac{1}{2}\mathbf{v}\widetilde{\mathbf{S}} \mathbf{v}^T } \right]_{\mathbf{v} \in \mathbb{F}_2^m} = 	\left[ i^{\mathbf{v}  \overline{\mathbf{S}} \mathbf{v}^T +2 \mathbf{b v}^T} \right]_{\mathbf{v} \in \mathbb{F}_2^m},
+\end{equation}
+where $\overline{\mathbf{S}}$, and $\mathbf{b}$, can be found using the Howard algorithm. Algorithm \ref{alg:DecExtended1} summarizes this approach for more general extended BC defined in def. \ref{DefExtend2}.
+ \begin{algorithm}[!h]
+	\caption{Simplified decoding algorithm for extended BC defined in Eq. \ref{BCExt1Def}\label{alg:DecExtended1}}
+	\begin{algorithmic}[1]
+		\Require Input signal $\mathbf{y}$, $m$.
+		\Ensure Estimated $\overline{\mathbf{S}}, \widetilde{\mathbf{S}}$, and $\mathbf{b}$.
+		\State Compute $\mathbf{y}_2 = \mathbf{y} \odot \mathbf{y}$.
+		\State Apply Howard algorithm to $\mathbf{y}_2$ in order to find $\widetilde{\mathbf{S}}$.
+		\State Compute $\mathbf{y}_3 = \mathbf{y}\odot \left[ i^{-\frac{1}{2}\mathbf{v}\widetilde{\mathbf{S}} \mathbf{v}^T } \right]_{\mathbf{v} \in \mathbb{F}_2^m}$.
+		\State Apply Howard algorithm to find $\overline{\mathbf{S}}$ and $\mathbf{b}$.
+	\end{algorithmic}
+\end{algorithm}
+
+However, the received signal usually suffers from noise. Hence, using this approach, the power of the noise will be increased, and using a simple Howard algorithm could result in significant performance degradation. Instead, we propose using Algorithm \ref{alg:FinBCDecoder}. In this algorithm for each $\mathbf{S}_i, i=1,...,k-1$, using the proposed Algorithm \ref{alg:FinBCDecoder}, $K$ candidates can be found. Then for each candidate, by removing the previously founded $\mathbf{S}_{i-1}$, we apply Algorithm \ref{alg:FinBCDecoder} and select the K best candidates among them. At the output of the Howard algorithm in the final state, one can treat estimated $\mathbf{b}$ as $\mathbf{D}_k$. Algorithm \ref{alg:DecExtended2} describes this approach, where through numerical results, we show that the performance gap between the proposed and the exhaustive search approach is minor. However, one can apply the proposed low complexity approach for higher values of $m$.
+ \begin{algorithm}[!h]
+	\caption{Simplified decoding algorithm for extended BC defined in def. \ref{DefExtend2}\label{alg:DecExtended2}}
+	\begin{algorithmic}[1]
+		\Require Input signal $\mathbf{y}$, $m$, $k$, and $K$.
+		\Ensure Estimated $\mathbf{S}_i, i=1,...,k-1$, and $\mathbf{D}_k$.
+		\State Initialize candidate list $\mathcal{N} = \left\{ \widetilde{\mathbf{y}}_j, = \mathbf{y}, \widehat{\mathbf{S}}^i_j=\mathbf{0} \right\}_{j=1}^K, i=1,...,k-1$.
+		\For{i=1:k-1}
+		\For{each Candidate}
+		\State Compute $\mathbf{y}_2^j = \underbrace{\widehat{\mathbf{y}}_j\odot...\odot \widehat{\mathbf{y}}_j}_{2^{k-i-1} \text{ times}}$.
+		\State Find $K$ candidate for $\widehat{\mathbf{S}}_j$ using Algorithm \ref{alg:FinBCDecoder} based on $\mathbf{y}_2^j$
+		\EndFor
+		\State Consider best $K$ candidtes and update $\mathcal{N}$.
+		\State Update $\widetilde{\mathbf{y}}_j = \widetilde{\mathbf{y}}_j \odot \left[ i^{-\frac{1}{2}\mathbf{v}\widetilde{\mathbf{S}} \mathbf{v}^T } \right]_{\mathbf{v} \in \mathbb{F}_2^m}$
+		\EndFor
+		\State Select the best candidates among $K$ estimated parameters.
+	\end{algorithmic}
+\end{algorithm}
+\section{Numerical Results}
+
+\section{Conclusion}
+
+%\begin{thebibliography}{1}
+
+%\bibitem{ams}
+%{\it{Mathematics into Type}}, American Mathematical Society. Online available: 
+
+%\bibitem{oxford}
+%T.W. Chaundy, P.R. Barrett and C. Batey, {\it{The Printing of Mathematics}}, Oxford University Press. London, 1954.
+
+%\bibitem{lacomp}{\it{The \LaTeX Companion}}, by F. Mittelbach and M. Goossens
+
+%\bibitem{mmt}{\it{More Math into LaTeX}}, by G. Gr\"atzer
+
+%\bibitem{amstyle}{\it{AMS-StyleGuide-online.pdf,}} published by the American Mathematical Society
+
+%\bibitem{Sira3}
+%H. Sira-Ramirez. ``On the sliding mode control of nonlinear systems,'' \textit{Systems \& Control Letters}, vol. 19, pp. 303--312, 1992.
+
+%\bibitem{Levant}
+%A. Levant. ``Exact differentiation of signals with unbounded higher derivatives,''  in \textit{Proceedings of the 45th IEEE Conference on Decision and Control}, San Diego, California, USA, pp. 5585--5590, 2006.
+
+%\bibitem{Cedric}
+%M. Fliess, C. Join, and H. Sira-Ramirez. ``Non-linear estimation is easy,'' \textit{International Journal of Modelling, Identification and Control}, vol. 4, no. 1, pp. 12--27, 2008.
+
+%\bibitem{Ortega}
+%R. Ortega, A. Astolfi, G. Bastin, and H. Rodriguez. ``Stabilization of food-chain systems using a port-controlled Hamiltonian description,'' in \textit{Proceedings of the American Control Conference}, Chicago, Illinois, USA, pp. 2245--2249, 2000.
+
+%\end{thebibliography}
+
+%\begin{IEEEbiographynophoto}{Jane Doe}
+%Biography text here without a photo.
+%\end{IEEEbiographynophoto}
+
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{fig1.png}}]{IEEE Publications Technology Team}
+%In this paragraph you can place your educational, professional background and research and other interests.\end{IEEEbiography}
+\section*{Future Works}
+It is interesting to consider an approach for extending the binary chirps to higher levels without reducing the minimum distance. Even if it isn't possible, it is worth investigating a new extension with a higher minimum distance than the proposed extended binary chirps. To do so, one can consider the Ungerboeck partitioning for 8-PSK. Also, there exist Dolsarle-Goethals (DG) codes, defined as
+\begin{equation}
+	\text{DG}\left(m,r\right) = \left\{\mathbf{S} \bigg{|} \text{rank}\left(\mathbf{S}_1-\mathbf{S}_2\right) \ge 2r   \right\}.
+\end{equation} 
+Thus at each level of the Hierarchy, the codebooks of the extended binary chirps need to be designed carefully. It is obvious that using the power two decoding approach, always less significant in terms of binary decomposition, is the worst one to achieve, i.e.,  $\mathbf{R}_0$ in $\mathbf{R}=\mathbf{R}_0+2\mathbf{R}_2+...+2^{K-1}\mathbf{R}_{K-1}$. 
+
+Also, we need to reconsider the decoder in this case since the Howard algorithm only works on symmetric matrices without any constraints on them. However, considering a restriction on the codewords, it is interesting to find out a decoding approach that achieves a better result with lower complexity.
+
+
+\bibliographystyle{IEEEtran}
+{\footnotesize \bibliography{IEEEabrv,ASSref}
+}
+\end{document}
+
+
